@@ -1,0 +1,11 @@
+# Compiled Output
+/dist
+/node_modules
+
+# Tests
+/coverage
+
+# Environment Variables
+.env
+.env.test
+docker-compose.yml
