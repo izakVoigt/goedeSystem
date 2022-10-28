@@ -2,14 +2,11 @@ import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Sequelize } from "sequelize-typescript";
 import * as request from "supertest";
-
 import { AppModule } from "../../../app.module";
-import { DepartmentsService } from "../departments.service";
 
-describe("Department module", () => {
+describe("Department auth module", () => {
   let app: INestApplication;
   let sequelize: Sequelize;
-  let service: DepartmentsService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,7 +14,6 @@ describe("Department module", () => {
     }).compile();
 
     sequelize = module.get<Sequelize>(Sequelize);
-    service = module.get<DepartmentsService>(DepartmentsService);
 
     app = module.createNestApplication();
     await app.init();
