@@ -2,7 +2,6 @@ import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Sequelize } from "sequelize-typescript";
 import * as request from "supertest";
-
 import { AppModule } from "../../../app.module";
 import { DepartmentsService } from "../departments.service";
 import { JwtGuard } from "../../../auth/guard";
