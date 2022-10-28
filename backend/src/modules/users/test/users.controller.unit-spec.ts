@@ -1,6 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-
-import { CreateUserDto, SearchUserDto, UpdateUserPatchDto, UpdateUserPutDto } from "../dto";
+import { CreateUserDto, UpdateUserPatchDto, UpdateUserPutDto } from "../dto";
 import { UsersController } from "../users.controller";
 import { UsersService } from "../users.service";
 import { brazilianStates } from "../../../util/enum/brazilianStates.enum";
@@ -29,8 +28,8 @@ describe("Users Controller", () => {
         };
       }
     }),
-    data: jest.fn((Sdto: SearchUserDto) => {
-      if (Sdto.id === 1) {
+    data: jest.fn((id: number) => {
+      if (id === 1) {
         return {
           statusCode: 200,
           data: {
@@ -62,21 +61,21 @@ describe("Users Controller", () => {
           },
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Usuário não encontrado",
         };
       }
     }),
-    destroy: jest.fn((Sdto: SearchUserDto) => {
-      if (Sdto.id === 1) {
+    destroy: jest.fn((id: number) => {
+      if (id === 1) {
         return {
           statusCode: 200,
           message: "Usuário excluído com sucesso",
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Usuário não encontrado",
@@ -117,43 +116,43 @@ describe("Users Controller", () => {
         ],
       };
     }),
-    updatePatch: jest.fn((Sdto: SearchUserDto, Udto: UpdateUserPatchDto) => {
+    updatePatch: jest.fn((id: number, Udto: UpdateUserPatchDto) => {
       if (
-        (Sdto.id === 1 && !Udto.iDepartment && !Udto.email) ||
-        (Sdto.id === 1 && Udto.iDepartment === 1 && Udto.email !== "test@test.com")
+        (id === 1 && !Udto.iDepartment && !Udto.email) ||
+        (id === 1 && Udto.iDepartment === 1 && Udto.email !== "test@test.com")
       ) {
         return {
           statusCode: 200,
           message: "Usuário alterado com sucesso",
         };
       }
-      if (Sdto.id === 1 && Udto.iDepartment !== 1) {
+      if (id === 1 && Udto.iDepartment !== 1) {
         return {
           statusCode: 404,
           message: "Departamento não encontrado",
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Usuário não encontrado",
         };
       }
     }),
-    updatePut: jest.fn((Sdto: SearchUserDto, Udto: UpdateUserPutDto) => {
-      if (Sdto.id === 1 && Udto.iDepartment === 1 && Udto.email !== "test@test.com") {
+    updatePut: jest.fn((id: number, Udto: UpdateUserPutDto) => {
+      if (id === 1 && Udto.iDepartment === 1 && Udto.email !== "test@test.com") {
         return {
           statusCode: 200,
           message: "Usuário alterado com sucesso",
         };
       }
-      if (Sdto.id !== 1 && Udto.iDepartment === 1) {
+      if (id !== 1 && Udto.iDepartment === 1) {
         return {
           statusCode: 404,
           message: "Usuário não encontrado",
         };
       }
-      if (Sdto.id === 1 && Udto.iDepartment !== 1) {
+      if (id === 1 && Udto.iDepartment !== 1) {
         return {
           statusCode: 404,
           message: "Departamento não encontrado",
@@ -162,7 +161,7 @@ describe("Users Controller", () => {
     }),
   };
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [UsersService],
@@ -181,23 +180,19 @@ describe("Users Controller", () => {
     });
 
     it("should try to delete an user with an invalid id", () => {
-      const Sdto: SearchUserDto = {
-        id: 2,
-      };
+      const id = 2;
 
-      expect(controller.destroy(Sdto)).toEqual({ statusCode: 404, message: "Usuário não encontrado" });
+      expect(controller.destroy(id)).toEqual({ statusCode: 404, message: "Usuário não encontrado" });
       expect(mockUserService.destroy).toBeCalledTimes(1);
-      expect(mockUserService.destroy).toBeCalledWith(Sdto);
+      expect(mockUserService.destroy).toBeCalledWith(id);
     });
 
     it("should delete the user with id 1", () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
+      const id = 1;
 
-      expect(controller.destroy(Sdto)).toEqual({ statusCode: 200, message: "Usuário excluído com sucesso" });
+      expect(controller.destroy(id)).toEqual({ statusCode: 200, message: "Usuário excluído com sucesso" });
       expect(mockUserService.destroy).toBeCalledTimes(1);
-      expect(mockUserService.destroy).toBeCalledWith(Sdto);
+      expect(mockUserService.destroy).toBeCalledWith(id);
     });
   });
 
@@ -251,21 +246,17 @@ describe("Users Controller", () => {
     });
 
     it("should try to get the user with an invalid id", () => {
-      const Sdto: SearchUserDto = {
-        id: 2,
-      };
+      const id = 2;
 
-      expect(controller.data(Sdto)).toEqual({ statusCode: 404, message: "Usuário não encontrado" });
+      expect(controller.data(id)).toEqual({ statusCode: 404, message: "Usuário não encontrado" });
       expect(mockUserService.data).toBeCalledTimes(1);
-      expect(mockUserService.data).toBeCalledWith(Sdto);
+      expect(mockUserService.data).toBeCalledWith(id);
     });
 
     it("should get the user data by id", () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
+      const id = 1;
 
-      expect(controller.data(Sdto)).toEqual({
+      expect(controller.data(id)).toEqual({
         statusCode: 200,
         data: {
           id: 1,
@@ -296,7 +287,7 @@ describe("Users Controller", () => {
         },
       });
       expect(mockUserService.data).toBeCalledTimes(1);
-      expect(mockUserService.data).toBeCalledWith(Sdto);
+      expect(mockUserService.data).toBeCalledWith(id);
     });
   });
 
@@ -307,42 +298,36 @@ describe("Users Controller", () => {
     });
 
     it("should try to update with an invalid id", () => {
-      const Sdto: SearchUserDto = {
-        id: 2,
-      };
+      const id = 2;
       const Udto: UpdateUserPatchDto = {
         name: "Test",
       };
 
-      expect(controller.updatePatch(Sdto, Udto)).toEqual({ statusCode: 404, message: "Usuário não encontrado" });
+      expect(controller.updatePatch(id, Udto)).toEqual({ statusCode: 404, message: "Usuário não encontrado" });
       expect(mockUserService.updatePatch).toBeCalledTimes(1);
-      expect(mockUserService.updatePatch).toBeCalledWith(Sdto, Udto);
+      expect(mockUserService.updatePatch).toBeCalledWith(id, Udto);
     });
 
     it("should try to update with an invalid department", () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateUserPatchDto = {
         iDepartment: 2,
       };
 
-      expect(controller.updatePatch(Sdto, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
+      expect(controller.updatePatch(id, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
       expect(mockUserService.updatePatch).toBeCalledTimes(1);
-      expect(mockUserService.updatePatch).toBeCalledWith(Sdto, Udto);
+      expect(mockUserService.updatePatch).toBeCalledWith(id, Udto);
     });
 
     it("should update the user", () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateUserPatchDto = {
         name: "Test 01",
       };
 
-      expect(controller.updatePatch(Sdto, Udto)).toEqual({ statusCode: 200, message: "Usuário alterado com sucesso" });
+      expect(controller.updatePatch(id, Udto)).toEqual({ statusCode: 200, message: "Usuário alterado com sucesso" });
       expect(mockUserService.updatePatch).toBeCalledTimes(1);
-      expect(mockUserService.updatePatch).toBeCalledWith(Sdto, Udto);
+      expect(mockUserService.updatePatch).toBeCalledWith(id, Udto);
     });
   });
 
@@ -422,9 +407,7 @@ describe("Users Controller", () => {
     });
 
     it("should try to update with an invalid id", () => {
-      const Sdto: SearchUserDto = {
-        id: 2,
-      };
+      const id = 2;
       const Udto: UpdateUserPutDto = {
         active: true,
         address: "Test",
@@ -451,15 +434,13 @@ describe("Users Controller", () => {
         phone: "(00)00000-0000",
       };
 
-      expect(controller.updatePut(Sdto, Udto)).toEqual({ statusCode: 404, message: "Usuário não encontrado" });
+      expect(controller.updatePut(id, Udto)).toEqual({ statusCode: 404, message: "Usuário não encontrado" });
       expect(mockUserService.updatePut).toBeCalledTimes(1);
-      expect(mockUserService.updatePut).toBeCalledWith(Sdto, Udto);
+      expect(mockUserService.updatePut).toBeCalledWith(id, Udto);
     });
 
     it("should try to update with an invalid department", () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateUserPutDto = {
         active: true,
         address: "Test",
@@ -486,15 +467,13 @@ describe("Users Controller", () => {
         phone: "(00)00000-0000",
       };
 
-      expect(controller.updatePut(Sdto, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
+      expect(controller.updatePut(id, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
       expect(mockUserService.updatePut).toBeCalledTimes(1);
-      expect(mockUserService.updatePut).toBeCalledWith(Sdto, Udto);
+      expect(mockUserService.updatePut).toBeCalledWith(id, Udto);
     });
 
     it("should update the user", () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateUserPutDto = {
         active: true,
         address: "Test",
@@ -521,9 +500,9 @@ describe("Users Controller", () => {
         phone: "(00)00000-0000",
       };
 
-      expect(controller.updatePut(Sdto, Udto)).toEqual({ statusCode: 200, message: "Usuário alterado com sucesso" });
+      expect(controller.updatePut(id, Udto)).toEqual({ statusCode: 200, message: "Usuário alterado com sucesso" });
       expect(mockUserService.updatePut).toBeCalledTimes(1);
-      expect(mockUserService.updatePut).toBeCalledWith(Sdto, Udto);
+      expect(mockUserService.updatePut).toBeCalledWith(id, Udto);
     });
   });
 });

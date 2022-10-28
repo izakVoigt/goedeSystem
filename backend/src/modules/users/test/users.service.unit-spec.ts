@@ -2,7 +2,6 @@ import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { getModelToken } from "@nestjs/sequelize";
 import { Test, TestingModule } from "@nestjs/testing";
 import { DestroyOptions, FindOptions, UpdateOptions } from "sequelize";
-
 import { UsersService } from "../users.service";
 import { DepartmentsService } from "../../departments/departments.service";
 import { Departments } from "../../departments/model/departments.model";
@@ -320,7 +319,7 @@ describe("Users Service", () => {
     });
   };
 
-  beforeAll(() => {
+  beforeAll(async () => {
     departmentsTable.push({
       id: departmentsTable.length + 1,
       createdAt: new Date(),
@@ -328,8 +327,7 @@ describe("Users Service", () => {
       name: "Test",
       updatedAt: new Date(),
     });
-  });
-  beforeEach(async () => {
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
@@ -467,7 +465,7 @@ describe("Users Service", () => {
     });
 
     it("should get user data", async () => {
-      const req = await service.data({ id: 1 });
+      const req = await service.data(1);
 
       expect(req.data).toEqual({
         id: 1,
@@ -501,7 +499,7 @@ describe("Users Service", () => {
     });
 
     it("should try to get user data from a invalid id", async () => {
-      await expect(service.data({ id: 2 })).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
+      await expect(service.data(2)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
       expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
     });
   });
@@ -519,7 +517,7 @@ describe("Users Service", () => {
     });
 
     it("should destroy user with id 1", async () => {
-      const req = await service.destroy({ id: 1 });
+      const req = await service.destroy(1);
 
       expect(req.message).toEqual("Usuário excluído com sucesso");
       expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
@@ -528,7 +526,7 @@ describe("Users Service", () => {
     });
 
     it("should try to destroy an user with an invalid id", async () => {
-      await expect(service.destroy({ id: 2 })).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
+      await expect(service.destroy(2)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
       expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
       expect(mockSequelizeUsers.destroy).toHaveBeenCalledTimes(0);
     });
@@ -576,10 +574,15 @@ describe("Users Service", () => {
     });
 
     it("should update user with id 1", async () => {
-      const req = await service.updatePatch(
-        { id: 1 },
-        { iDepartment: 1, name: "Test 02", office: "Test 02", password: "Test@654321" },
-      );
+      const req = await service.updatePatch(1, {
+        birthDate: "01-01-2000",
+        hireDate: "01-01-2000",
+        fireDate: "01-01-2000",
+        iDepartment: 1,
+        name: "Test 02",
+        office: "Test 02",
+        password: "Test@654321",
+      });
 
       expect(req.message).toEqual("Usuário alterado com sucesso");
       expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
@@ -590,7 +593,7 @@ describe("Users Service", () => {
     });
 
     it("should try to update with an invalid department id", async () => {
-      await expect(service.updatePatch({ id: 1 }, { iDepartment: 2, name: "Test 03" })).rejects.toThrow(
+      await expect(service.updatePatch(1, { iDepartment: 2, name: "Test 03" })).rejects.toThrow(
         new NotFoundException("Departamento não encontrado"),
       );
       expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
@@ -604,7 +607,7 @@ describe("Users Service", () => {
     it("should try to update with an invalid email", async () => {
       createUserId02();
 
-      await expect(service.updatePatch({ id: 1 }, { email: "test02@test.com" })).rejects.toThrow(
+      await expect(service.updatePatch(1, { email: "test02@test.com" })).rejects.toThrow(
         new BadRequestException("E-mail já em uso"),
       );
       expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
@@ -616,7 +619,7 @@ describe("Users Service", () => {
     });
 
     it("should try to update with an invalid id", async () => {
-      await expect(service.updatePatch({ id: 3 }, { name: "Test 03" })).rejects.toThrow(
+      await expect(service.updatePatch(3, { name: "Test 03" })).rejects.toThrow(
         new NotFoundException("Usuário não encontrado"),
       );
       expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
@@ -640,9 +643,119 @@ describe("Users Service", () => {
     });
 
     it("should update user with id 1", async () => {
-      const req = await service.updatePut(
-        { id: 1 },
-        {
+      const req = await service.updatePut(1, {
+        active: false,
+        address: "Test 02",
+        addressCity: "Test 02",
+        addressDistrict: "Test 02",
+        addressNumber: 321,
+        addressState: brazilianStates.AC,
+        addressZipCode: "11111-111",
+        birthDate: "02-02-2222",
+        cpf: "222.222.222-22",
+        email: "test03@test.com",
+        fireDate: "01-01-2000",
+        hireDate: "02-02-2222",
+        iDepartment: 1,
+        name: "Test 02",
+        office: "Test 02",
+        password: "Test.123456",
+        permAccounting: false,
+        permAdmin: false,
+        permCorporate: false,
+        permFinances: false,
+        permHuman: false,
+        permMarketing: false,
+        permOversee: false,
+        phone: "(22)22222-2222",
+      });
+
+      expect(req.message).toEqual("Usuário alterado com sucesso");
+      expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
+      expect(mockSequelizeUsers.findOne).toHaveBeenCalledTimes(1);
+      expect(mockSequelizeDepartments.findByPk).toHaveBeenCalledTimes(1);
+      expect(mockSequelizeUsers.update).toHaveBeenCalledTimes(1);
+      expect(usersTable[0].name).toEqual("Test 02");
+      expect(usersTable[0].office).toEqual("Test 02");
+    });
+
+    it("should try to update with an invalid department id", async () => {
+      await expect(
+        service.updatePut(1, {
+          active: false,
+          address: "Test 02",
+          addressCity: "Test 02",
+          addressDistrict: "Test 02",
+          addressNumber: 321,
+          addressState: brazilianStates.AC,
+          addressZipCode: "11111-111",
+          birthDate: "02-02-2222",
+          cpf: "222.222.222-22",
+          email: "test03@test.com",
+          hireDate: "02-02-2222",
+          iDepartment: 2,
+          name: "Test 02",
+          office: "Test 02",
+          password: "Test.123456",
+          permAccounting: false,
+          permAdmin: false,
+          permCorporate: false,
+          permFinances: false,
+          permHuman: false,
+          permMarketing: false,
+          permOversee: false,
+          phone: "(22)22222-2222",
+        }),
+      ).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
+      expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
+      expect(mockSequelizeUsers.findOne).toHaveBeenCalledTimes(1);
+      expect(mockSequelizeDepartments.findByPk).toHaveBeenCalledTimes(1);
+      expect(mockSequelizeUsers.update).toHaveBeenCalledTimes(0);
+      expect(usersTable[0].name).toEqual("Test 02");
+      expect(usersTable[0].iDepartment).toEqual(1);
+    });
+
+    it("should try to update with an invalid email", async () => {
+      createUserId02();
+
+      await expect(
+        service.updatePut(1, {
+          active: false,
+          address: "Test 02",
+          addressCity: "Test 02",
+          addressDistrict: "Test 02",
+          addressNumber: 321,
+          addressState: brazilianStates.AC,
+          addressZipCode: "11111-111",
+          birthDate: "02-02-2222",
+          cpf: "222.222.222-22",
+          email: "test02@test.com",
+          hireDate: "02-02-2222",
+          iDepartment: 1,
+          name: "Test 01",
+          office: "Test 02",
+          password: "Test.123456",
+          permAccounting: false,
+          permAdmin: false,
+          permCorporate: false,
+          permFinances: false,
+          permHuman: false,
+          permMarketing: false,
+          permOversee: false,
+          phone: "(22)22222-2222",
+        }),
+      ).rejects.toThrow(new BadRequestException("E-mail já em uso"));
+      expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
+      expect(mockSequelizeUsers.findOne).toHaveBeenCalledTimes(1);
+      expect(mockSequelizeDepartments.findByPk).toHaveBeenCalledTimes(0);
+      expect(mockSequelizeUsers.update).toHaveBeenCalledTimes(0);
+      expect(usersTable[0].name).toEqual("Test 02");
+      expect(usersTable[0].iDepartment).toEqual(1);
+    });
+
+    it("should try to update with an invalid id", async () => {
+      await expect(
+        service.updatePut(3, {
           active: false,
           address: "Test 02",
           addressCity: "Test 02",
@@ -666,128 +779,7 @@ describe("Users Service", () => {
           permMarketing: false,
           permOversee: false,
           phone: "(22)22222-2222",
-        },
-      );
-
-      expect(req.message).toEqual("Usuário alterado com sucesso");
-      expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
-      expect(mockSequelizeUsers.findOne).toHaveBeenCalledTimes(1);
-      expect(mockSequelizeDepartments.findByPk).toHaveBeenCalledTimes(1);
-      expect(mockSequelizeUsers.update).toHaveBeenCalledTimes(1);
-      expect(usersTable[0].name).toEqual("Test 02");
-      expect(usersTable[0].office).toEqual("Test 02");
-    });
-
-    it("should try to update with an invalid department id", async () => {
-      await expect(
-        service.updatePut(
-          { id: 1 },
-          {
-            active: false,
-            address: "Test 02",
-            addressCity: "Test 02",
-            addressDistrict: "Test 02",
-            addressNumber: 321,
-            addressState: brazilianStates.AC,
-            addressZipCode: "11111-111",
-            birthDate: "02-02-2222",
-            cpf: "222.222.222-22",
-            email: "test03@test.com",
-            hireDate: "02-02-2222",
-            iDepartment: 2,
-            name: "Test 02",
-            office: "Test 02",
-            password: "Test.123456",
-            permAccounting: false,
-            permAdmin: false,
-            permCorporate: false,
-            permFinances: false,
-            permHuman: false,
-            permMarketing: false,
-            permOversee: false,
-            phone: "(22)22222-2222",
-          },
-        ),
-      ).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
-      expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
-      expect(mockSequelizeUsers.findOne).toHaveBeenCalledTimes(1);
-      expect(mockSequelizeDepartments.findByPk).toHaveBeenCalledTimes(1);
-      expect(mockSequelizeUsers.update).toHaveBeenCalledTimes(0);
-      expect(usersTable[0].name).toEqual("Test 02");
-      expect(usersTable[0].iDepartment).toEqual(1);
-    });
-
-    it("should try to update with an invalid email", async () => {
-      createUserId02();
-
-      await expect(
-        service.updatePut(
-          { id: 1 },
-          {
-            active: false,
-            address: "Test 02",
-            addressCity: "Test 02",
-            addressDistrict: "Test 02",
-            addressNumber: 321,
-            addressState: brazilianStates.AC,
-            addressZipCode: "11111-111",
-            birthDate: "02-02-2222",
-            cpf: "222.222.222-22",
-            email: "test02@test.com",
-            hireDate: "02-02-2222",
-            iDepartment: 1,
-            name: "Test 01",
-            office: "Test 02",
-            password: "Test.123456",
-            permAccounting: false,
-            permAdmin: false,
-            permCorporate: false,
-            permFinances: false,
-            permHuman: false,
-            permMarketing: false,
-            permOversee: false,
-            phone: "(22)22222-2222",
-          },
-        ),
-      ).rejects.toThrow(new BadRequestException("E-mail já em uso"));
-      expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
-      expect(mockSequelizeUsers.findOne).toHaveBeenCalledTimes(1);
-      expect(mockSequelizeDepartments.findByPk).toHaveBeenCalledTimes(0);
-      expect(mockSequelizeUsers.update).toHaveBeenCalledTimes(0);
-      expect(usersTable[0].name).toEqual("Test 02");
-      expect(usersTable[0].iDepartment).toEqual(1);
-    });
-
-    it("should try to update with an invalid id", async () => {
-      await expect(
-        service.updatePut(
-          { id: 3 },
-          {
-            active: false,
-            address: "Test 02",
-            addressCity: "Test 02",
-            addressDistrict: "Test 02",
-            addressNumber: 321,
-            addressState: brazilianStates.AC,
-            addressZipCode: "11111-111",
-            birthDate: "02-02-2222",
-            cpf: "222.222.222-22",
-            email: "test03@test.com",
-            hireDate: "02-02-2222",
-            iDepartment: 1,
-            name: "Test 02",
-            office: "Test 02",
-            password: "Test.123456",
-            permAccounting: false,
-            permAdmin: false,
-            permCorporate: false,
-            permFinances: false,
-            permHuman: false,
-            permMarketing: false,
-            permOversee: false,
-            phone: "(22)22222-2222",
-          },
-        ),
+        }),
       ).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
       expect(mockSequelizeUsers.findByPk).toHaveBeenCalledTimes(1);
       expect(mockSequelizeUsers.findOne).toHaveBeenCalledTimes(0);

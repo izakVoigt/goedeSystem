@@ -106,7 +106,7 @@ describe("Vacancies Service", () => {
     });
   };
 
-  beforeAll(() => {
+  beforeAll(async () => {
     departmentsTable.push({
       id: departmentsTable.length + 1,
       createdAt: new Date(),
@@ -114,8 +114,7 @@ describe("Vacancies Service", () => {
       name: "Test",
       updatedAt: new Date(),
     });
-  });
-  beforeEach(async () => {
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         VacanciesService,
@@ -171,7 +170,7 @@ describe("Vacancies Service", () => {
     });
 
     it("should get vacancy data", async () => {
-      const req = await service.data({ id: 1 });
+      const req = await service.data(1);
 
       expect(req).toEqual({
         data: {
@@ -188,7 +187,7 @@ describe("Vacancies Service", () => {
     });
 
     it("should try to get vacancy data from a invalid id", async () => {
-      await expect(service.data({ id: 2 })).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
+      await expect(service.data(2)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
       expect(mockSequelizeVacancies.findByPk).toHaveBeenCalledTimes(1);
     });
   });
@@ -206,7 +205,7 @@ describe("Vacancies Service", () => {
     });
 
     it("should destroy vacancy with id 1", async () => {
-      const req = await service.destroy({ id: 1 });
+      const req = await service.destroy(1);
 
       expect(req.message).toEqual("Vaga excluída com sucesso");
       expect(mockSequelizeVacancies.findByPk).toHaveBeenCalledTimes(1);
@@ -215,7 +214,7 @@ describe("Vacancies Service", () => {
     });
 
     it("should try to destroy a vacancy with an invalid id", async () => {
-      await expect(service.destroy({ id: 2 })).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
+      await expect(service.destroy(2)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
       expect(mockSequelizeVacancies.findByPk).toHaveBeenCalledTimes(1);
       expect(mockSequelizeVacancies.destroy).toHaveBeenCalledTimes(0);
     });
@@ -274,7 +273,7 @@ describe("Vacancies Service", () => {
     });
 
     it("should update vacancy with id 1", async () => {
-      const req = await service.updatePatch({ id: 1 }, { description: "Test 02", iDepartment: 1, title: "Test 02" });
+      const req = await service.updatePatch(1, { description: "Test 02", iDepartment: 1, title: "Test 02" });
 
       expect(req.message).toEqual("Vaga alterada com sucesso");
       expect(mockSequelizeVacancies.findByPk).toHaveBeenCalledTimes(1);
@@ -284,7 +283,7 @@ describe("Vacancies Service", () => {
     });
 
     it("should try to update with an invalid department", async () => {
-      await expect(service.updatePatch({ id: 1 }, { description: "Test 03", iDepartment: 2 })).rejects.toThrow(
+      await expect(service.updatePatch(1, { description: "Test 03", iDepartment: 2 })).rejects.toThrow(
         new NotFoundException("Departamento não encontrado"),
       );
       expect(mockSequelizeVacancies.findByPk).toHaveBeenCalledTimes(1);
@@ -295,7 +294,7 @@ describe("Vacancies Service", () => {
     });
 
     it("should try to update with an invalid id", async () => {
-      await expect(service.updatePatch({ id: 2 }, { description: "Test 03", title: "Test 03" })).rejects.toThrow(
+      await expect(service.updatePatch(2, { description: "Test 03", title: "Test 03" })).rejects.toThrow(
         new NotFoundException("Vaga não encontrada"),
       );
       expect(mockSequelizeVacancies.findByPk).toHaveBeenCalledTimes(1);
@@ -319,10 +318,12 @@ describe("Vacancies Service", () => {
     });
 
     it("should update vacancy with id 1", async () => {
-      const req = await service.updatePut(
-        { id: 1 },
-        { description: "Test 02", iDepartment: 1, requirements: "Test 02", title: "Test 02" },
-      );
+      const req = await service.updatePut(1, {
+        description: "Test 02",
+        iDepartment: 1,
+        requirements: "Test 02",
+        title: "Test 02",
+      });
 
       expect(req.message).toEqual("Vaga alterada com sucesso");
       expect(mockSequelizeVacancies.findByPk).toHaveBeenCalledTimes(1);
@@ -336,10 +337,7 @@ describe("Vacancies Service", () => {
 
     it("should try to update with an invalid department", async () => {
       await expect(
-        service.updatePut(
-          { id: 1 },
-          { description: "Test 03", iDepartment: 2, requirements: "Test 03", title: "Test 03" },
-        ),
+        service.updatePut(1, { description: "Test 03", iDepartment: 2, requirements: "Test 03", title: "Test 03" }),
       ).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
       expect(mockSequelizeVacancies.findByPk).toHaveBeenCalledTimes(1);
       expect(mockSequelizeDepartments.findByPk).toHaveBeenCalledTimes(1);
@@ -352,10 +350,7 @@ describe("Vacancies Service", () => {
 
     it("should try to update with an invalid id", async () => {
       await expect(
-        service.updatePut(
-          { id: 2 },
-          { description: "Test 03", iDepartment: 1, requirements: "Test 03", title: "Test 03" },
-        ),
+        service.updatePut(2, { description: "Test 03", iDepartment: 1, requirements: "Test 03", title: "Test 03" }),
       ).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
     });
   });

@@ -2,7 +2,6 @@ import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Sequelize } from "sequelize-typescript";
-
 import { Departments } from "../../departments/model/departments.model";
 import { DepartmentsModule } from "../../departments/departments.module";
 import { DepartmentsService } from "../../departments/departments.service";
@@ -10,7 +9,7 @@ import { Users } from "../model/users.model";
 import { UsersController } from "../users.controller";
 import { UsersModule } from "../users.module";
 import { UsersService } from "../users.service";
-import { CreateUserDto, SearchUserDto, UpdateUserPatchDto, UpdateUserPutDto } from "../dto";
+import { CreateUserDto, UpdateUserPatchDto, UpdateUserPutDto } from "../dto";
 import { databaseOptions } from "../../../config/database.config";
 import { brazilianStates } from "../../../util/enum/brazilianStates.enum";
 
@@ -133,7 +132,7 @@ describe("Users module", () => {
       await createDepartment();
 
       const req = await controller.create(Cdto);
-      const validation = await usersService.data({ id: 1 });
+      const validation = await usersService.data(1);
 
       expect(req.message).toEqual("Usuário criado com sucesso");
       expect(validation.data.id).toEqual(1);
@@ -237,14 +236,10 @@ describe("Users module", () => {
     });
 
     it("should get data from user id 1", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
-
       await createDepartment();
       await createUser01();
 
-      const req = await controller.data(Sdto);
+      const req = await controller.data(1);
 
       expect(req.data.id).toEqual(1);
       expect(req.data.address).toEqual("Test 01");
@@ -273,13 +268,9 @@ describe("Users module", () => {
     });
 
     it("should try to get data from an invalid user", async () => {
-      const Sdto: SearchUserDto = {
-        id: 2,
-      };
-
       const validation = await usersService.list();
 
-      await expect(controller.data(Sdto)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
+      await expect(controller.data(2)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
       expect(validation.list.length).toEqual(0);
     });
   });
@@ -291,14 +282,10 @@ describe("Users module", () => {
     });
 
     it("should destroy user with id 1", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
-
       await createDepartment();
       await createUser01();
 
-      const req = await controller.destroy(Sdto);
+      const req = await controller.destroy(1);
 
       const validation = await usersService.list();
 
@@ -307,13 +294,9 @@ describe("Users module", () => {
     });
 
     it("should try destroy user with an invalid id", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
-
       const validation = await usersService.list();
 
-      await expect(controller.destroy(Sdto)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
+      await expect(controller.destroy(1)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
       expect(validation.list.length).toEqual(0);
     });
   });
@@ -341,9 +324,6 @@ describe("Users module", () => {
     });
 
     it("should update user with id 1", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
       const Udto: UpdateUserPatchDto = {
         birthDate: "01-02-2000",
         fireDate: "01-02-2000",
@@ -356,9 +336,9 @@ describe("Users module", () => {
       await createDepartment();
       await createUser01();
 
-      const req = await controller.updatePatch(Sdto, Udto);
+      const req = await controller.updatePatch(1, Udto);
 
-      const validation = await usersService.data(Sdto);
+      const validation = await usersService.data(1);
 
       expect(req.message).toEqual("Usuário alterado com sucesso");
       expect(validation.data.name).toEqual("Test 02");
@@ -369,9 +349,6 @@ describe("Users module", () => {
     });
 
     it("should try to update a nonexistent user", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
       const Udto: UpdateUserPatchDto = {
         name: "Test 02",
         office: "Test 02",
@@ -381,14 +358,11 @@ describe("Users module", () => {
 
       const validation = await usersService.list();
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
+      await expect(controller.updatePatch(1, Udto)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
       expect(validation.list.length).toEqual(0);
     });
 
     it("should try to update with an invalid email", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
       const Udto: UpdateUserPatchDto = {
         email: "test02@test.com",
       };
@@ -397,16 +371,13 @@ describe("Users module", () => {
       await createUser01();
       await createUser02();
 
-      const validation = await usersService.data(Sdto);
+      const validation = await usersService.data(1);
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(new BadRequestException("E-mail já em uso"));
+      await expect(controller.updatePatch(1, Udto)).rejects.toThrow(new BadRequestException("E-mail já em uso"));
       expect(validation.data.email).toEqual("test01@test.com");
     });
 
     it("should try to update with a nonexistent department", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
       const Udto: UpdateUserPatchDto = {
         iDepartment: 2,
       };
@@ -414,9 +385,9 @@ describe("Users module", () => {
       await createDepartment();
       await createUser01();
 
-      const validation = await usersService.data(Sdto);
+      const validation = await usersService.data(1);
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(
+      await expect(controller.updatePatch(1, Udto)).rejects.toThrow(
         new NotFoundException("Departamento não encontrado"),
       );
       expect(validation.data.iDepartment).toEqual(1);
@@ -430,9 +401,6 @@ describe("Users module", () => {
     });
 
     it("should update user with id 1", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
       const Udto: UpdateUserPutDto = {
         active: false,
         address: "Test 02",
@@ -463,9 +431,9 @@ describe("Users module", () => {
       await createDepartment();
       await createUser01();
 
-      const req = await controller.updatePut(Sdto, Udto);
+      const req = await controller.updatePut(1, Udto);
 
-      const validation = await usersService.data(Sdto);
+      const validation = await usersService.data(1);
 
       expect(req.message).toEqual("Usuário alterado com sucesso");
       expect(validation.data.active).toEqual(false);
@@ -480,9 +448,6 @@ describe("Users module", () => {
     });
 
     it("should try to update a nonexistent user", async () => {
-      const Sdto: SearchUserDto = {
-        id: 2,
-      };
       const Udto: UpdateUserPutDto = {
         active: false,
         address: "Test 02",
@@ -513,14 +478,11 @@ describe("Users module", () => {
 
       const validation = await usersService.list();
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
+      await expect(controller.updatePatch(2, Udto)).rejects.toThrow(new NotFoundException("Usuário não encontrado"));
       expect(validation.list.length).toEqual(0);
     });
 
     it("should try to update with an invalid email", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
       const Udto: UpdateUserPutDto = {
         active: false,
         address: "Test 02",
@@ -551,16 +513,13 @@ describe("Users module", () => {
       await createUser01();
       await createUser02();
 
-      const validation = await usersService.data(Sdto);
+      const validation = await usersService.data(1);
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(new BadRequestException("E-mail já em uso"));
+      await expect(controller.updatePatch(1, Udto)).rejects.toThrow(new BadRequestException("E-mail já em uso"));
       expect(validation.data.email).toEqual("test01@test.com");
     });
 
     it("should try to update with a nonexistent department", async () => {
-      const Sdto: SearchUserDto = {
-        id: 1,
-      };
       const Udto: UpdateUserPutDto = {
         active: false,
         address: "Test 02",
@@ -590,9 +549,9 @@ describe("Users module", () => {
       await createDepartment();
       await createUser01();
 
-      const validation = await usersService.data(Sdto);
+      const validation = await usersService.data(1);
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(
+      await expect(controller.updatePatch(1, Udto)).rejects.toThrow(
         new NotFoundException("Departamento não encontrado"),
       );
       expect(validation.data.iDepartment).toEqual(1);

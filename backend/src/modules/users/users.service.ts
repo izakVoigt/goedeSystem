@@ -1,7 +1,6 @@
 import * as argon from "argon2";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-
 import { CreateUserDto, UpdateUserPatchDto, UpdateUserPutDto } from "./dto";
 import { Departments } from "../departments/model/departments.model";
 import { Users } from "./model/users.model";
@@ -16,40 +15,65 @@ export class UsersService {
   ) {}
 
   async create(Cdto: CreateUserDto) {
-    const userExists = await this.usersModel.findOne({ where: { email: Cdto.email } });
+    const {
+      address,
+      addressCity,
+      addressDistrict,
+      addressNumber,
+      addressState,
+      addressZipCode,
+      birthDate,
+      cpf,
+      email,
+      hireDate,
+      iDepartment,
+      name,
+      office,
+      password,
+      permAccounting,
+      permAdmin,
+      permCorporate,
+      permFinances,
+      permHuman,
+      permMarketing,
+      permOversee,
+      phone,
+    } = Cdto;
+
+    const userExists = await this.usersModel.findOne({ where: { email } });
 
     if (userExists) throw new BadRequestException("E-mail já em uso");
 
-    const departmentExists = await this.departmentsModel.findByPk(Cdto.iDepartment);
+    const departmentExists = await this.departmentsModel.findByPk(iDepartment);
 
     if (!departmentExists) throw new NotFoundException("Departamento não encontrado");
 
-    const hash = await argon.hash(Cdto.password);
+    const hash = await argon.hash(password);
 
     await this.usersModel.create({
       active: true,
-      address: Cdto.address,
-      addressCity: Cdto.addressCity,
-      addressDistrict: Cdto.addressDistrict,
-      addressNumber: Cdto.addressNumber,
-      addressState: Cdto.addressState,
-      addressZipCode: Cdto.addressZipCode,
-      birthDate: new Date(Cdto.birthDate),
-      cpf: Cdto.cpf,
-      email: Cdto.email,
-      hireDate: new Date(Cdto.hireDate),
-      iDepartment: Cdto.iDepartment,
-      name: Cdto.name,
-      office: Cdto.office,
+      address,
+      addressCity,
+      addressDistrict,
+      addressNumber,
+      addressState,
+      addressZipCode,
+      birthDate: new Date(birthDate),
+      cpf,
+      email,
+      hireDate: new Date(hireDate),
+      iDepartment,
+      name,
+      office,
       password: hash,
-      permAccounting: Cdto.permAccounting,
-      permAdmin: Cdto.permAdmin,
-      permCorporate: Cdto.permCorporate,
-      permFinances: Cdto.permFinances,
-      permHuman: Cdto.permHuman,
-      permMarketing: Cdto.permMarketing,
-      permOversee: Cdto.permOversee,
-      phone: Cdto.phone,
+      permAccounting,
+      permAdmin,
+      permCorporate,
+      permFinances,
+      permHuman,
+      permMarketing,
+      permOversee,
+      phone,
     });
 
     return { message: "Usuário criado com sucesso" };
@@ -80,65 +104,92 @@ export class UsersService {
   }
 
   async updatePatch(id: number, Udto: UpdateUserPatchDto) {
+    const {
+      active,
+      address,
+      addressCity,
+      addressDistrict,
+      addressNumber,
+      addressState,
+      addressZipCode,
+      birthDate,
+      cpf,
+      email,
+      fireDate,
+      hireDate,
+      iDepartment,
+      name,
+      office,
+      password,
+      permAccounting,
+      permAdmin,
+      permCorporate,
+      permFinances,
+      permHuman,
+      permMarketing,
+      permOversee,
+      phone,
+    } = Udto;
+
     const user = await this.usersModel.findByPk(id);
 
     if (!user) throw new NotFoundException("Usuário não encontrado");
 
-    if (Udto.email) {
-      const userExists = await this.usersModel.findOne({ where: { email: Udto.email } });
+    if (email) {
+      const userExists = await this.usersModel.findOne({ where: { email } });
 
       if (userExists) throw new BadRequestException("E-mail já em uso");
     }
-    if (Udto.iDepartment) {
-      const departmentExists = await this.departmentsModel.findByPk(Udto.iDepartment);
+    if (iDepartment) {
+      const departmentExists = await this.departmentsModel.findByPk(iDepartment);
 
       if (!departmentExists) throw new NotFoundException("Departamento não encontrado");
     }
 
     let hash: string = Udto.password;
-    let birthDate: Date | undefined = undefined;
-    let fireDate: Date | undefined = undefined;
-    let hireDate: Date | undefined = undefined;
+    let BirthDate: Date | undefined = undefined;
+    let FireDate: Date | undefined = undefined;
+    let HireDate: Date | undefined = undefined;
 
-    if (Udto.password) {
+    if (password) {
       hash = await argon.hash(Udto.password);
     }
-    if (Udto.birthDate) {
-      birthDate = new Date(Udto.birthDate);
+    if (birthDate) {
+      BirthDate = new Date(birthDate);
     }
-    if (Udto.fireDate) {
-      fireDate = new Date(Udto.fireDate);
+    if (fireDate) {
+      FireDate = new Date(fireDate);
     }
-    if (Udto.hireDate) {
-      hireDate = new Date(Udto.hireDate);
+    if (hireDate) {
+      HireDate = new Date(hireDate);
     }
 
     await this.usersModel.update(
       {
-        active: Udto.active,
-        address: Udto.address,
-        addressCity: Udto.addressCity,
-        addressDistrict: Udto.addressDistrict,
-        addressNumber: Udto.addressNumber,
-        addressState: Udto.addressState,
-        addressZipCode: Udto.addressZipCode,
-        birthDate: birthDate,
-        cpf: Udto.cpf,
-        email: Udto.email,
-        fireDate: fireDate,
-        hireDate: hireDate,
-        iDepartment: Udto.iDepartment,
-        name: Udto.name,
-        office: Udto.office,
+        active,
+        address,
+        addressCity,
+        addressDistrict,
+        addressNumber,
+        addressState,
+        addressZipCode,
+        birthDate: BirthDate,
+        cpf,
+        email,
+        fireDate: FireDate,
+        hireDate: HireDate,
+        iDepartment,
+        name,
+        office,
         password: hash,
-        permAccounting: Udto.permAccounting,
-        permAdmin: Udto.permAdmin,
-        permCorporate: Udto.permCorporate,
-        permFinances: Udto.permFinances,
-        permHuman: Udto.permHuman,
-        permMarketing: Udto.permMarketing,
-        permOversee: Udto.permOversee,
-        phone: Udto.phone,
+        permAccounting,
+        permAdmin,
+        permCorporate,
+        permFinances,
+        permHuman,
+        permMarketing,
+        permOversee,
+        phone,
       },
       { where: { id } },
     );
@@ -149,51 +200,78 @@ export class UsersService {
   }
 
   async updatePut(id: number, Udto: UpdateUserPutDto) {
+    const {
+      active,
+      address,
+      addressCity,
+      addressDistrict,
+      addressNumber,
+      addressState,
+      addressZipCode,
+      birthDate,
+      cpf,
+      email,
+      fireDate,
+      hireDate,
+      iDepartment,
+      name,
+      office,
+      password,
+      permAccounting,
+      permAdmin,
+      permCorporate,
+      permFinances,
+      permHuman,
+      permMarketing,
+      permOversee,
+      phone,
+    } = Udto;
+
     const user = await this.usersModel.findByPk(id);
 
     if (!user) throw new NotFoundException("Usuário não encontrado");
 
-    const userExists = await this.usersModel.findOne({ where: { email: Udto.email } });
+    const userExists = await this.usersModel.findOne({ where: { email } });
 
     if (userExists && userExists.email !== user.email) throw new BadRequestException("E-mail já em uso");
 
-    const departmentExists = await this.departmentsModel.findByPk(Udto.iDepartment);
+    const departmentExists = await this.departmentsModel.findByPk(iDepartment);
 
     if (!departmentExists) throw new NotFoundException("Departamento não encontrado");
 
-    const hash: string = await argon.hash(Udto.password);
-    let fireDate: Date | undefined = undefined;
+    const hash: string = await argon.hash(password);
+    let FireDate: Date | undefined = undefined;
 
     if (Udto.fireDate) {
-      fireDate = new Date(Udto.fireDate);
+      FireDate = new Date(fireDate);
     }
 
     await this.usersModel.update(
       {
-        active: Udto.active,
-        address: Udto.address,
-        addressCity: Udto.addressCity,
-        addressDistrict: Udto.addressDistrict,
-        addressNumber: Udto.addressNumber,
-        addressState: Udto.addressState,
-        addressZipCode: Udto.addressZipCode,
-        birthDate: new Date(Udto.birthDate),
-        cpf: Udto.cpf,
-        email: Udto.email,
-        fireDate: fireDate,
-        hireDate: new Date(Udto.hireDate),
-        iDepartment: Udto.iDepartment,
-        name: Udto.name,
-        office: Udto.office,
+        active,
+        address,
+        addressCity,
+        addressDistrict,
+        addressNumber,
+        addressState,
+        addressZipCode,
+        birthDate: new Date(birthDate),
+        cpf,
+        email,
+        fireDate: FireDate,
+        hireDate: new Date(hireDate),
+        iDepartment,
+        name,
+        office,
         password: hash,
-        permAccounting: Udto.permAccounting,
-        permAdmin: Udto.permAdmin,
-        permCorporate: Udto.permCorporate,
-        permFinances: Udto.permFinances,
-        permHuman: Udto.permHuman,
-        permMarketing: Udto.permMarketing,
-        permOversee: Udto.permOversee,
-        phone: Udto.phone,
+        permAccounting,
+        permAdmin,
+        permCorporate,
+        permFinances,
+        permHuman,
+        permMarketing,
+        permOversee,
+        phone,
       },
       { where: { id } },
     );

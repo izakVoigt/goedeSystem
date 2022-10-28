@@ -1,6 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-
-import { CreateVacancyDto, SearchVacancyDto, UpdateVacancyPatchDto, UpdateVacancyPutDto } from "../dto";
+import { CreateVacancyDto, UpdateVacancyPatchDto, UpdateVacancyPutDto } from "../dto";
 import { VacanciesController } from "../vacancies.controller";
 import { VacanciesService } from "../vacancies.service";
 
@@ -22,8 +21,8 @@ describe("Vacancies Controller", () => {
         };
       }
     }),
-    data: jest.fn((Sdto: SearchVacancyDto) => {
-      if (Sdto.id === 1) {
+    data: jest.fn((id: number) => {
+      if (id === 1) {
         return {
           statusCode: 200,
           data: {
@@ -37,21 +36,21 @@ describe("Vacancies Controller", () => {
           },
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Vaga não encontrada",
         };
       }
     }),
-    destroy: jest.fn((Sdto: SearchVacancyDto) => {
-      if (Sdto.id === 1) {
+    destroy: jest.fn((id: number) => {
+      if (id === 1) {
         return {
           statusCode: 200,
           message: "Vaga excluída com sucesso",
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Vaga não encontrada",
@@ -74,40 +73,40 @@ describe("Vacancies Controller", () => {
         ],
       };
     }),
-    updatePatch: jest.fn((Sdto: SearchVacancyDto, Udto: UpdateVacancyPatchDto) => {
-      if ((Sdto.id === 1 && !Udto.iDepartment) || (Sdto.id === 1 && Udto.iDepartment === 1)) {
+    updatePatch: jest.fn((id: number, Udto: UpdateVacancyPatchDto) => {
+      if ((id === 1 && !Udto.iDepartment) || (id === 1 && Udto.iDepartment === 1)) {
         return {
           statusCode: 200,
           message: "Vaga alterada com sucesso",
         };
       }
-      if (Sdto.id === 1 && Udto.iDepartment !== 1) {
+      if (id === 1 && Udto.iDepartment !== 1) {
         return {
           statusCode: 404,
           message: "Departamento não encontrado",
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Vaga não encontrada",
         };
       }
     }),
-    updatePut: jest.fn((Sdto: SearchVacancyDto, Udto: UpdateVacancyPutDto) => {
-      if (Sdto.id === 1 && Udto.iDepartment === 1) {
+    updatePut: jest.fn((id: number, Udto: UpdateVacancyPutDto) => {
+      if (id === 1 && Udto.iDepartment === 1) {
         return {
           statusCode: 200,
           message: "Vaga alterada com sucesso",
         };
       }
-      if (Sdto.id !== 1 && Udto.iDepartment === 1) {
+      if (id !== 1 && Udto.iDepartment === 1) {
         return {
           statusCode: 404,
           message: "Vaga não encontrada",
         };
       }
-      if (Sdto.id === 1 && Udto.iDepartment !== 1) {
+      if (id === 1 && Udto.iDepartment !== 1) {
         return {
           statusCode: 404,
           message: "Departamento não encontrado",
@@ -116,7 +115,7 @@ describe("Vacancies Controller", () => {
     }),
   };
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [VacanciesController],
       providers: [VacanciesService],
@@ -135,23 +134,19 @@ describe("Vacancies Controller", () => {
     });
 
     it("should try to delete a vacancy with an invalid id", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 2,
-      };
+      const id = 2;
 
-      expect(controller.destroy(Sdto)).toEqual({ statusCode: 404, message: "Vaga não encontrada" });
+      expect(controller.destroy(id)).toEqual({ statusCode: 404, message: "Vaga não encontrada" });
       expect(mockVacancyService.destroy).toBeCalledTimes(1);
-      expect(mockVacancyService.destroy).toBeCalledWith(Sdto);
+      expect(mockVacancyService.destroy).toBeCalledWith(id);
     });
 
     it("should delete the vacancy with id 1", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
 
-      expect(controller.destroy(Sdto)).toEqual({ statusCode: 200, message: "Vaga excluída com sucesso" });
+      expect(controller.destroy(id)).toEqual({ statusCode: 200, message: "Vaga excluída com sucesso" });
       expect(mockVacancyService.destroy).toBeCalledTimes(1);
-      expect(mockVacancyService.destroy).toBeCalledWith(Sdto);
+      expect(mockVacancyService.destroy).toBeCalledWith(id);
     });
   });
 
@@ -187,21 +182,17 @@ describe("Vacancies Controller", () => {
     });
 
     it("should try to get the vacancy with an invalid id", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 2,
-      };
+      const id = 2;
 
-      expect(controller.data(Sdto)).toEqual({ statusCode: 404, message: "Vaga não encontrada" });
+      expect(controller.data(id)).toEqual({ statusCode: 404, message: "Vaga não encontrada" });
       expect(mockVacancyService.data).toBeCalledTimes(1);
-      expect(mockVacancyService.data).toBeCalledWith(Sdto);
+      expect(mockVacancyService.data).toBeCalledWith(id);
     });
 
     it("should get the vacancy data by id", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
 
-      expect(controller.data(Sdto)).toEqual({
+      expect(controller.data(id)).toEqual({
         statusCode: 200,
         data: {
           id: 1,
@@ -214,7 +205,7 @@ describe("Vacancies Controller", () => {
         },
       });
       expect(mockVacancyService.data).toBeCalledTimes(1);
-      expect(mockVacancyService.data).toBeCalledWith(Sdto);
+      expect(mockVacancyService.data).toBeCalledWith(id);
     });
   });
 
@@ -225,43 +216,37 @@ describe("Vacancies Controller", () => {
     });
 
     it("should try to update with an invalid id", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 2,
-      };
+      const id = 2;
       const Udto: UpdateVacancyPatchDto = {
         description: "New test",
         title: "New test",
       };
 
-      expect(controller.updatePatch(Sdto, Udto)).toEqual({ statusCode: 404, message: "Vaga não encontrada" });
+      expect(controller.updatePatch(id, Udto)).toEqual({ statusCode: 404, message: "Vaga não encontrada" });
       expect(mockVacancyService.updatePatch).toBeCalledTimes(1);
-      expect(mockVacancyService.updatePatch).toBeCalledWith(Sdto, Udto);
+      expect(mockVacancyService.updatePatch).toBeCalledWith(id, Udto);
     });
 
     it("should try to update with an invalid department", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateVacancyPatchDto = {
         iDepartment: 2,
       };
 
-      expect(controller.updatePatch(Sdto, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
+      expect(controller.updatePatch(id, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
       expect(mockVacancyService.updatePatch).toBeCalledTimes(1);
-      expect(mockVacancyService.updatePatch).toBeCalledWith(Sdto, Udto);
+      expect(mockVacancyService.updatePatch).toBeCalledWith(id, Udto);
     });
 
     it("should update the vacancy", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateVacancyPatchDto = {
         description: "New test",
       };
 
-      expect(controller.updatePatch(Sdto, Udto)).toEqual({ statusCode: 200, message: "Vaga alterada com sucesso" });
+      expect(controller.updatePatch(id, Udto)).toEqual({ statusCode: 200, message: "Vaga alterada com sucesso" });
       expect(mockVacancyService.updatePatch).toBeCalledTimes(1);
-      expect(mockVacancyService.updatePatch).toBeCalledWith(Sdto, Udto);
+      expect(mockVacancyService.updatePatch).toBeCalledWith(id, Udto);
     });
   });
 
@@ -305,9 +290,7 @@ describe("Vacancies Controller", () => {
     });
 
     it("should try to update with an invalid id", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 2,
-      };
+      const id = 2;
       const Udto: UpdateVacancyPutDto = {
         description: "New test",
         iDepartment: 1,
@@ -315,15 +298,13 @@ describe("Vacancies Controller", () => {
         title: "New test",
       };
 
-      expect(controller.updatePut(Sdto, Udto)).toEqual({ statusCode: 404, message: "Vaga não encontrada" });
+      expect(controller.updatePut(id, Udto)).toEqual({ statusCode: 404, message: "Vaga não encontrada" });
       expect(mockVacancyService.updatePut).toBeCalledTimes(1);
-      expect(mockVacancyService.updatePut).toBeCalledWith(Sdto, Udto);
+      expect(mockVacancyService.updatePut).toBeCalledWith(id, Udto);
     });
 
     it("should try to update with an invalid department", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateVacancyPutDto = {
         description: "New test",
         iDepartment: 2,
@@ -331,15 +312,13 @@ describe("Vacancies Controller", () => {
         title: "New test",
       };
 
-      expect(controller.updatePut(Sdto, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
+      expect(controller.updatePut(id, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
       expect(mockVacancyService.updatePut).toBeCalledTimes(1);
-      expect(mockVacancyService.updatePut).toBeCalledWith(Sdto, Udto);
+      expect(mockVacancyService.updatePut).toBeCalledWith(id, Udto);
     });
 
     it("should update the vacancy", () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateVacancyPutDto = {
         description: "New test",
         iDepartment: 1,
@@ -347,9 +326,9 @@ describe("Vacancies Controller", () => {
         title: "New test",
       };
 
-      expect(controller.updatePut(Sdto, Udto)).toEqual({ statusCode: 200, message: "Vaga alterada com sucesso" });
+      expect(controller.updatePut(id, Udto)).toEqual({ statusCode: 200, message: "Vaga alterada com sucesso" });
       expect(mockVacancyService.updatePut).toBeCalledTimes(1);
-      expect(mockVacancyService.updatePut).toBeCalledWith(Sdto, Udto);
+      expect(mockVacancyService.updatePut).toBeCalledWith(id, Udto);
     });
   });
 });

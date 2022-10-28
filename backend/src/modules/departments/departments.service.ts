@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-
 import { CreateDepartmentDto, UpdateDepartmentPatchDto, UpdateDepartmentPutDto } from "./dto";
-
 import { Departments } from "./model/departments.model";
 
 @Injectable()
@@ -13,13 +11,15 @@ export class DepartmentsService {
   ) {}
 
   async create(Cdto: CreateDepartmentDto) {
-    const departmentExists = await this.departmentModel.findOne({ where: { name: Cdto.name } });
+    const { description, name } = Cdto;
+
+    const departmentExists = await this.departmentModel.findOne({ where: { name } });
 
     if (departmentExists) throw new BadRequestException("Departamento já existente");
 
     await this.departmentModel.create({
-      description: Cdto.description,
-      name: Cdto.name,
+      description,
+      name,
     });
 
     return { message: "Departamento criado com sucesso" };
@@ -50,20 +50,22 @@ export class DepartmentsService {
   }
 
   async updatePatch(id: number, Udto: UpdateDepartmentPatchDto) {
+    const { description, name } = Udto;
+
     const department = await this.departmentModel.findByPk(id);
 
     if (!department) throw new NotFoundException("Departamento não encontrado");
 
-    if (Udto.name) {
-      const departmentNameExists = await this.departmentModel.findOne({ where: { name: Udto.name } });
+    if (name) {
+      const departmentNameExists = await this.departmentModel.findOne({ where: { name } });
 
       if (departmentNameExists) throw new BadRequestException("Departamento já existente");
     }
 
     await this.departmentModel.update(
       {
-        description: Udto.description,
-        name: Udto.name,
+        description,
+        name,
       },
       { where: { id } },
     );
@@ -72,18 +74,20 @@ export class DepartmentsService {
   }
 
   async updatePut(id: number, Udto: UpdateDepartmentPutDto) {
+    const { description, name } = Udto;
+
     const department = await this.departmentModel.findByPk(id);
 
     if (!department) throw new NotFoundException("Departamento não encontrado");
 
-    const departmentNameExists = await this.departmentModel.findOne({ where: { name: Udto.name } });
+    const departmentNameExists = await this.departmentModel.findOne({ where: { name } });
 
     if (departmentNameExists) throw new BadRequestException("Departamento já existente");
 
     await this.departmentModel.update(
       {
-        description: Udto.description,
-        name: Udto.name,
+        description,
+        name,
       },
       { where: { id } },
     );

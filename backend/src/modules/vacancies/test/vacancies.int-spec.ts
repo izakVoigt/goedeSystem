@@ -2,7 +2,6 @@ import { NotFoundException } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Sequelize } from "sequelize-typescript";
-
 import { Departments } from "../../departments/model/departments.model";
 import { DepartmentsModule } from "../../departments/departments.module";
 import { DepartmentsService } from "../../departments/departments.service";
@@ -10,7 +9,7 @@ import { Vacancies } from "../model/vacancies.model";
 import { VacanciesController } from "../vacancies.controller";
 import { VacanciesModule } from "../vacancies.module";
 import { VacanciesService } from "../vacancies.service";
-import { CreateVacancyDto, SearchVacancyDto, UpdateVacancyPatchDto, UpdateVacancyPutDto } from "../dto";
+import { CreateVacancyDto, UpdateVacancyPatchDto, UpdateVacancyPutDto } from "../dto";
 import { databaseOptions } from "../../../config/database.config";
 
 describe("Vacancies module", () => {
@@ -70,7 +69,7 @@ describe("Vacancies module", () => {
       await createDepartment();
 
       const req = await controller.create(Cdto);
-      const validation = await vacanciesService.data({ id: 1 });
+      const validation = await vacanciesService.data(1);
 
       expect(req.message).toEqual("Vaga criada com sucesso");
       expect(validation.data.id).toEqual(1);
@@ -102,14 +101,12 @@ describe("Vacancies module", () => {
     });
 
     it("should get vacancy data", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
 
       await createDepartment();
       await createVacancy01();
 
-      const req = await controller.data(Sdto);
+      const req = await controller.data(id);
 
       expect(req.data.id).toEqual(1);
       expect(req.data.description).toEqual("Test 01");
@@ -119,11 +116,9 @@ describe("Vacancies module", () => {
     });
 
     it("should try to get a vacancy data with an invalid id", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 2,
-      };
+      const id = 2;
 
-      await expect(controller.data(Sdto)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
+      await expect(controller.data(id)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
     });
   });
 
@@ -134,14 +129,12 @@ describe("Vacancies module", () => {
     });
 
     it("should destroy a vacancy", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
 
       await createDepartment();
       await createVacancy01();
 
-      const req = await controller.destroy(Sdto);
+      const req = await controller.destroy(id);
       const validation = await vacanciesService.list();
 
       expect(req.message).toEqual("Vaga excluída com sucesso");
@@ -149,15 +142,13 @@ describe("Vacancies module", () => {
     });
 
     it("should destroy a vacancy", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
 
       await createDepartment();
 
       const validation = await vacanciesService.list();
 
-      await expect(controller.destroy(Sdto)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
+      await expect(controller.destroy(id)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
       expect(validation.list.length).toEqual(0);
     });
   });
@@ -185,9 +176,7 @@ describe("Vacancies module", () => {
     });
 
     it("should update vacancy id 1", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateVacancyPatchDto = {
         description: "Test 03",
       };
@@ -195,17 +184,15 @@ describe("Vacancies module", () => {
       await createDepartment();
       await createVacancy01();
 
-      const req = await controller.updatePatch(Sdto, Udto);
-      const validation = await vacanciesService.data({ id: 1 });
+      const req = await controller.updatePatch(id, Udto);
+      const validation = await vacanciesService.data(1);
 
       expect(req.message).toEqual("Vaga alterada com sucesso");
       expect(validation.data.description).toEqual("Test 03");
     });
 
     it("should try to update vacancy id 1 with an invalid department id", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateVacancyPatchDto = {
         iDepartment: 2,
       };
@@ -213,18 +200,16 @@ describe("Vacancies module", () => {
       await createDepartment();
       await createVacancy01();
 
-      const validation = await vacanciesService.data({ id: 1 });
+      const validation = await vacanciesService.data(1);
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(
+      await expect(controller.updatePatch(id, Udto)).rejects.toThrow(
         new NotFoundException("Departamento não encontrado"),
       );
       expect(validation.data.iDepartment).toEqual(1);
     });
 
     it("should try to update vacancy with an invalid id", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 2,
-      };
+      const id = 2;
       const Udto: UpdateVacancyPatchDto = {
         description: "Test 03",
       };
@@ -232,7 +217,7 @@ describe("Vacancies module", () => {
       await createDepartment();
       await createVacancy01();
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
+      await expect(controller.updatePatch(id, Udto)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
     });
   });
 
@@ -243,9 +228,7 @@ describe("Vacancies module", () => {
     });
 
     it("should update vacancy id 1", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateVacancyPutDto = {
         description: "Test 03",
         iDepartment: 1,
@@ -256,8 +239,8 @@ describe("Vacancies module", () => {
       await createDepartment();
       await createVacancy01();
 
-      const req = await controller.updatePut(Sdto, Udto);
-      const validation = await vacanciesService.data({ id: 1 });
+      const req = await controller.updatePut(id, Udto);
+      const validation = await vacanciesService.data(1);
 
       expect(req.message).toEqual("Vaga alterada com sucesso");
       expect(validation.data.description).toEqual("Test 03");
@@ -267,9 +250,7 @@ describe("Vacancies module", () => {
     });
 
     it("should try update vacancy id 1 with an invalid department", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 1,
-      };
+      const id = 1;
       const Udto: UpdateVacancyPutDto = {
         description: "Test 03",
         iDepartment: 2,
@@ -280,9 +261,9 @@ describe("Vacancies module", () => {
       await createDepartment();
       await createVacancy01();
 
-      const validation = await vacanciesService.data({ id: 1 });
+      const validation = await vacanciesService.data(1);
 
-      await expect(controller.updatePut(Sdto, Udto)).rejects.toThrow(
+      await expect(controller.updatePut(id, Udto)).rejects.toThrow(
         new NotFoundException("Departamento não encontrado"),
       );
       expect(validation.data.description).toEqual("Test 01");
@@ -292,9 +273,7 @@ describe("Vacancies module", () => {
     });
 
     it("should try update vacancy id 1 with an invalid department", async () => {
-      const Sdto: SearchVacancyDto = {
-        id: 2,
-      };
+      const id = 2;
       const Udto: UpdateVacancyPutDto = {
         description: "Test 03",
         iDepartment: 1,
@@ -305,9 +284,9 @@ describe("Vacancies module", () => {
       await createDepartment();
       await createVacancy01();
 
-      const validation = await vacanciesService.data({ id: 1 });
+      const validation = await vacanciesService.data(1);
 
-      await expect(controller.updatePut(Sdto, Udto)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
+      await expect(controller.updatePut(id, Udto)).rejects.toThrow(new NotFoundException("Vaga não encontrada"));
       expect(validation.data.description).toEqual("Test 01");
       expect(validation.data.iDepartment).toEqual(1);
       expect(validation.data.requirements).toEqual("Test 01");

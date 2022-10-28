@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 
-import { CreateDepartmentDto, SearchDepartmentDto, UpdateDepartmentPatchDto, UpdateDepartmentPutDto } from "../dto";
+import { CreateDepartmentDto, UpdateDepartmentPatchDto, UpdateDepartmentPutDto } from "../dto";
 import { DepartmentsController } from "../departments.controller";
 import { DepartmentsService } from "../departments.service";
 
@@ -22,28 +22,28 @@ describe("Departments Controller", () => {
         };
       }
     }),
-    data: jest.fn((Sdto: SearchDepartmentDto) => {
-      if (Sdto.id === 1) {
+    data: jest.fn((id: number) => {
+      if (id === 1) {
         return {
           statusCode: 200,
           data: { id: 1, createdAt: new Date(), description: "Test", name: "Test", updatedAt: new Date() },
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Departamento não encontrado",
         };
       }
     }),
-    destroy: jest.fn((Sdto: SearchDepartmentDto) => {
-      if (Sdto.id === 1) {
+    destroy: jest.fn((id: number) => {
+      if (id === 1) {
         return {
           statusCode: 200,
           message: "Departamento excluído com sucesso",
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Departamento não encontrado",
@@ -56,40 +56,40 @@ describe("Departments Controller", () => {
         list: [{ id: 1, createdAt: new Date(), description: "Test", name: "Test", updatedAt: new Date() }],
       };
     }),
-    updatePatch: jest.fn((Sdto: SearchDepartmentDto, Udto: UpdateDepartmentPatchDto) => {
-      if ((Sdto.id === 1 && Udto.name !== "Test 01") || (Sdto.id === 1 && !Udto.name)) {
+    updatePatch: jest.fn((id: number, Udto: UpdateDepartmentPatchDto) => {
+      if ((id === 1 && Udto.name !== "Test 01") || (id === 1 && !Udto.name)) {
         return {
           statusCode: 200,
           message: "Departamento alterado com sucesso",
         };
       }
-      if (Sdto.id === 1 && Udto.name === "Test 01") {
+      if (id === 1 && Udto.name === "Test 01") {
         return {
           statusCode: 400,
           message: "Departamento já existente",
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Departamento não encontrado",
         };
       }
     }),
-    updatePut: jest.fn((Sdto: SearchDepartmentDto, Udto: UpdateDepartmentPutDto) => {
-      if (Sdto.id === 1 && Udto.name !== "Test 01") {
+    updatePut: jest.fn((id: number, Udto: UpdateDepartmentPutDto) => {
+      if (id === 1 && Udto.name !== "Test 01") {
         return {
           statusCode: 200,
           message: "Departamento alterado com sucesso",
         };
       }
-      if (Sdto.id === 1 && Udto.name === "Test 01") {
+      if (id === 1 && Udto.name === "Test 01") {
         return {
           statusCode: 400,
           message: "Departamento já existente",
         };
       }
-      if (Sdto.id === 2) {
+      if (id === 2) {
         return {
           statusCode: 404,
           message: "Departamento não encontrado",
@@ -117,23 +117,19 @@ describe("Departments Controller", () => {
     });
 
     it("should try to delete a department with invalid id", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 2,
-      };
+      const id = 2;
 
-      expect(controller.destroy(Sdto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
+      expect(controller.destroy(id)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
       expect(mockDepartmentService.destroy).toBeCalledTimes(1);
-      expect(mockDepartmentService.destroy).toBeCalledWith(Sdto);
+      expect(mockDepartmentService.destroy).toBeCalledWith(id);
     });
 
     it("should delete department with id 1", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
+      const id = 1;
 
-      expect(controller.destroy(Sdto)).toEqual({ statusCode: 200, message: "Departamento excluído com sucesso" });
+      expect(controller.destroy(id)).toEqual({ statusCode: 200, message: "Departamento excluído com sucesso" });
       expect(mockDepartmentService.destroy).toBeCalledTimes(1);
-      expect(mockDepartmentService.destroy).toBeCalledWith(Sdto);
+      expect(mockDepartmentService.destroy).toBeCalledWith(id);
     });
   });
 
@@ -159,26 +155,22 @@ describe("Departments Controller", () => {
     });
 
     it("should try to get the department with an invalid id", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 2,
-      };
+      const id = 2;
 
-      expect(controller.data(Sdto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
+      expect(controller.data(id)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
       expect(mockDepartmentService.data).toBeCalledTimes(1);
-      expect(mockDepartmentService.data).toBeCalledWith(Sdto);
+      expect(mockDepartmentService.data).toBeCalledWith(id);
     });
 
     it("should get the department data by id", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
+      const id = 1;
 
-      expect(controller.data(Sdto)).toEqual({
+      expect(controller.data(id)).toEqual({
         statusCode: 200,
         data: { id: 1, createdAt: expect.any(Date), description: "Test", name: "Test", updatedAt: expect.any(Date) },
       });
       expect(mockDepartmentService.data).toBeCalledTimes(1);
-      expect(mockDepartmentService.data).toBeCalledWith(Sdto);
+      expect(mockDepartmentService.data).toBeCalledWith(id);
     });
   });
 
@@ -189,45 +181,42 @@ describe("Departments Controller", () => {
     });
 
     it("should try to update with an invalid id", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 2,
-      };
+      const id = 2;
+
       const Udto: UpdateDepartmentPatchDto = {
         description: "Test 02",
       };
 
-      expect(controller.updatePatch(Sdto, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
+      expect(controller.updatePatch(id, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
       expect(mockDepartmentService.updatePatch).toBeCalledTimes(1);
-      expect(mockDepartmentService.updatePatch).toBeCalledWith(Sdto, Udto);
+      expect(mockDepartmentService.updatePatch).toBeCalledWith(id, Udto);
     });
 
     it("should try to update with an already used name", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
+      const id = 1;
+
       const Udto: UpdateDepartmentPatchDto = {
         name: "Test 01",
       };
 
-      expect(controller.updatePatch(Sdto, Udto)).toEqual({ statusCode: 400, message: "Departamento já existente" });
+      expect(controller.updatePatch(id, Udto)).toEqual({ statusCode: 400, message: "Departamento já existente" });
       expect(mockDepartmentService.updatePatch).toBeCalledTimes(1);
-      expect(mockDepartmentService.updatePatch).toBeCalledWith(Sdto, Udto);
+      expect(mockDepartmentService.updatePatch).toBeCalledWith(id, Udto);
     });
 
     it("should update the department", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
+      const id = 1;
+
       const Udto: UpdateDepartmentPatchDto = {
         name: "Test 02",
       };
 
-      expect(controller.updatePatch(Sdto, Udto)).toEqual({
+      expect(controller.updatePatch(id, Udto)).toEqual({
         statusCode: 200,
         message: "Departamento alterado com sucesso",
       });
       expect(mockDepartmentService.updatePatch).toBeCalledTimes(1);
-      expect(mockDepartmentService.updatePatch).toBeCalledWith(Sdto, Udto);
+      expect(mockDepartmentService.updatePatch).toBeCalledWith(id, Udto);
     });
   });
 
@@ -267,48 +256,45 @@ describe("Departments Controller", () => {
     });
 
     it("should try to update with an invalid id", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 2,
-      };
+      const id = 2;
+
       const Udto: UpdateDepartmentPutDto = {
         description: "Test 02",
         name: "Test 02",
       };
 
-      expect(controller.updatePut(Sdto, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
+      expect(controller.updatePut(id, Udto)).toEqual({ statusCode: 404, message: "Departamento não encontrado" });
       expect(mockDepartmentService.updatePut).toBeCalledTimes(1);
-      expect(mockDepartmentService.updatePut).toBeCalledWith(Sdto, Udto);
+      expect(mockDepartmentService.updatePut).toBeCalledWith(id, Udto);
     });
 
     it("should try to update with an already used name", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
+      const id = 1;
+
       const Udto: UpdateDepartmentPutDto = {
         description: "Test 01",
         name: "Test 01",
       };
 
-      expect(controller.updatePut(Sdto, Udto)).toEqual({ statusCode: 400, message: "Departamento já existente" });
+      expect(controller.updatePut(id, Udto)).toEqual({ statusCode: 400, message: "Departamento já existente" });
       expect(mockDepartmentService.updatePut).toBeCalledTimes(1);
-      expect(mockDepartmentService.updatePut).toBeCalledWith(Sdto, Udto);
+      expect(mockDepartmentService.updatePut).toBeCalledWith(id, Udto);
     });
 
     it("should update the department", () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
+      const id = 1;
+
       const Udto: UpdateDepartmentPutDto = {
         description: "Test 02",
         name: "Test 02",
       };
 
-      expect(controller.updatePut(Sdto, Udto)).toEqual({
+      expect(controller.updatePut(id, Udto)).toEqual({
         statusCode: 200,
         message: "Departamento alterado com sucesso",
       });
       expect(mockDepartmentService.updatePut).toBeCalledTimes(1);
-      expect(mockDepartmentService.updatePut).toBeCalledWith(Sdto, Udto);
+      expect(mockDepartmentService.updatePut).toBeCalledWith(id, Udto);
     });
   });
 });

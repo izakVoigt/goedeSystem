@@ -11,7 +11,6 @@ import {
   Put,
   UseGuards,
 } from "@nestjs/common";
-
 import { JwtGuard } from "../../auth/guard";
 import { CreateUserDto, UpdateUserPatchDto, UpdateUserPutDto } from "./dto";
 import { UsersService } from "./users.service";

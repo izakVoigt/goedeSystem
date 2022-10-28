@@ -7,7 +7,7 @@ import { Departments } from "../model/departments.model";
 import { DepartmentsController } from "../departments.controller";
 import { DepartmentsModule } from "../departments.module";
 import { DepartmentsService } from "../departments.service";
-import { CreateDepartmentDto, SearchDepartmentDto, UpdateDepartmentPatchDto, UpdateDepartmentPutDto } from "../dto";
+import { CreateDepartmentDto, UpdateDepartmentPatchDto, UpdateDepartmentPutDto } from "../dto";
 import { databaseOptions } from "../../../config/database.config";
 
 describe("Department module", () => {
@@ -93,11 +93,7 @@ describe("Department module", () => {
     it("should get department's id 1 data", async () => {
       await createDepartment01();
 
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
-
-      const req = await controller.data(Sdto);
+      const req = await controller.data(1);
 
       expect(req.data.id).toEqual(1);
       expect(req.data.createdAt).toEqual(expect.any(Date));
@@ -107,13 +103,9 @@ describe("Department module", () => {
     });
 
     it("should try to get department's data from an invalid id", async () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
-
       const validation = await service.list();
 
-      await expect(controller.data(Sdto)).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
+      await expect(controller.data(1)).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
       expect(validation.list.length).toEqual(0);
     });
   });
@@ -127,11 +119,7 @@ describe("Department module", () => {
     it("should destroy department with id 1", async () => {
       await createDepartment01();
 
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
-
-      const req = await controller.destroy(Sdto);
+      const req = await controller.destroy(1);
 
       const validation = await service.list();
 
@@ -142,13 +130,9 @@ describe("Department module", () => {
     it("should try to destroy department with id 1 and fail", async () => {
       await createDepartment01();
 
-      const Sdto: SearchDepartmentDto = {
-        id: 2,
-      };
-
       const validation = await service.list();
 
-      await expect(controller.destroy(Sdto)).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
+      await expect(controller.destroy(2)).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
       expect(validation.list.length).toEqual(1);
     });
   });
@@ -177,16 +161,13 @@ describe("Department module", () => {
     it("should update department with id 1", async () => {
       await createDepartment01();
 
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
       const Udto: UpdateDepartmentPatchDto = {
         name: "Test 02",
       };
 
-      const req = await controller.updatePatch(Sdto, Udto);
+      const req = await controller.updatePatch(1, Udto);
 
-      const validation = await service.data({ id: 1 });
+      const validation = await service.data(1);
 
       expect(req.message).toEqual("Departamento alterado com sucesso");
       expect(validation.data.description).toEqual("Test 01");
@@ -194,16 +175,13 @@ describe("Department module", () => {
     });
 
     it("should try to update a department nonexistent", async () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
       const Udto: UpdateDepartmentPatchDto = {
         name: "Test 02",
       };
 
       const validation = await service.list();
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(
+      await expect(controller.updatePatch(1, Udto)).rejects.toThrow(
         new NotFoundException("Departamento não encontrado"),
       );
       expect(validation.list.length).toEqual(0);
@@ -213,16 +191,13 @@ describe("Department module", () => {
       await createDepartment01();
       await createDepartment02();
 
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
       const Udto: UpdateDepartmentPatchDto = {
         name: "Test 01",
       };
 
-      const validation = await service.data({ id: 2 });
+      const validation = await service.data(2);
 
-      await expect(controller.updatePatch(Sdto, Udto)).rejects.toThrow(
+      await expect(controller.updatePatch(1, Udto)).rejects.toThrow(
         new BadRequestException("Departamento já existente"),
       );
       expect(validation.data.name).toEqual("Test 02");
@@ -238,17 +213,14 @@ describe("Department module", () => {
     it("should update department with id 1", async () => {
       await createDepartment01();
 
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
       const Udto: UpdateDepartmentPutDto = {
         description: "Test 02",
         name: "Test 02",
       };
 
-      const req = await controller.updatePut(Sdto, Udto);
+      const req = await controller.updatePut(1, Udto);
 
-      const validation = await service.data({ id: 1 });
+      const validation = await service.data(1);
 
       expect(req.message).toEqual("Departamento alterado com sucesso");
       expect(validation.data.description).toEqual("Test 02");
@@ -256,9 +228,6 @@ describe("Department module", () => {
     });
 
     it("should try to update a department nonexistent", async () => {
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
       const Udto: UpdateDepartmentPutDto = {
         description: "Test 02",
         name: "Test 02",
@@ -266,9 +235,7 @@ describe("Department module", () => {
 
       const validation = await service.list();
 
-      await expect(controller.updatePut(Sdto, Udto)).rejects.toThrow(
-        new NotFoundException("Departamento não encontrado"),
-      );
+      await expect(controller.updatePut(1, Udto)).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
       expect(validation.list.length).toEqual(0);
     });
 
@@ -276,19 +243,14 @@ describe("Department module", () => {
       await createDepartment01();
       await createDepartment02();
 
-      const Sdto: SearchDepartmentDto = {
-        id: 1,
-      };
       const Udto: UpdateDepartmentPutDto = {
         description: "Test 02",
         name: "Test 02",
       };
 
-      const validation = await service.data({ id: 2 });
+      const validation = await service.data(2);
 
-      await expect(controller.updatePut(Sdto, Udto)).rejects.toThrow(
-        new BadRequestException("Departamento já existente"),
-      );
+      await expect(controller.updatePut(1, Udto)).rejects.toThrow(new BadRequestException("Departamento já existente"));
       expect(validation.data.name).toEqual("Test 02");
     });
   });

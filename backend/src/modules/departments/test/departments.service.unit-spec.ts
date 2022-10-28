@@ -139,7 +139,7 @@ describe("Departments Service", () => {
     });
 
     it("should get department data", async () => {
-      const req = await service.data({ id: 1 });
+      const req = await service.data(1);
 
       expect(req.data).toEqual({
         id: 1,
@@ -152,7 +152,7 @@ describe("Departments Service", () => {
     });
 
     it("should try to get department data from a invalid id", async () => {
-      await expect(service.data({ id: 2 })).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
+      await expect(service.data(2)).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
       expect(mockSequelizeDepartments.findByPk).toBeCalledTimes(1);
     });
   });
@@ -170,7 +170,7 @@ describe("Departments Service", () => {
     });
 
     it("should destroy vacancy with id 1", async () => {
-      const req = await service.destroy({ id: 1 });
+      const req = await service.destroy(1);
 
       expect(req.message).toEqual("Departamento excluído com sucesso");
       expect(mockSequelizeDepartments.findByPk).toBeCalledTimes(1);
@@ -179,7 +179,7 @@ describe("Departments Service", () => {
     });
 
     it("should try to destroy a vacancy with an invalid id", async () => {
-      await expect(service.destroy({ id: 2 })).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
+      await expect(service.destroy(2)).rejects.toThrow(new NotFoundException("Departamento não encontrado"));
       expect(mockSequelizeDepartments.findByPk).toBeCalledTimes(1);
       expect(mockSequelizeDepartments.destroy).toBeCalledTimes(0);
     });
@@ -235,7 +235,7 @@ describe("Departments Service", () => {
         updatedAt: new Date(),
       });
 
-      await expect(service.updatePatch({ id: 1 }, { name: "Test 01" })).rejects.toThrow(
+      await expect(service.updatePatch(1, { name: "Test 01" })).rejects.toThrow(
         new BadRequestException("Departamento já existente"),
       );
       expect(mockSequelizeDepartments.findOne).toBeCalledTimes(1);
@@ -245,7 +245,7 @@ describe("Departments Service", () => {
     });
 
     it("should try to update with an invalid id", async () => {
-      await expect(service.updatePatch({ id: 3 }, { description: "Test 03" })).rejects.toThrow(
+      await expect(service.updatePatch(3, { description: "Test 03" })).rejects.toThrow(
         new NotFoundException("Departamento não encontrado"),
       );
       expect(mockSequelizeDepartments.findByPk).toBeCalledTimes(1);
@@ -255,7 +255,7 @@ describe("Departments Service", () => {
     });
 
     it("should update department with id 1", async () => {
-      const req = await service.updatePatch({ id: 1 }, { description: "Test 02", name: "Test 02" });
+      const req = await service.updatePatch(1, { description: "Test 02", name: "Test 02" });
 
       expect(req.message).toEqual("Departamento alterado com sucesso");
       expect(mockSequelizeDepartments.findByPk).toBeCalledTimes(1);
@@ -278,7 +278,7 @@ describe("Departments Service", () => {
     });
 
     it("should update department with id 1", async () => {
-      const req = await service.updatePut({ id: 1 }, { description: "Test 01", name: "Test 01" });
+      const req = await service.updatePut(1, { description: "Test 01", name: "Test 01" });
 
       expect(req.message).toEqual("Departamento alterado com sucesso");
       expect(mockSequelizeDepartments.update).toBeCalledTimes(1);
@@ -295,7 +295,7 @@ describe("Departments Service", () => {
         updatedAt: new Date(),
       });
 
-      await expect(service.updatePut({ id: 1 }, { description: "Test 02", name: "Test 02" })).rejects.toThrow(
+      await expect(service.updatePut(1, { description: "Test 02", name: "Test 02" })).rejects.toThrow(
         new BadRequestException("Departamento já existente"),
       );
       expect(mockSequelizeDepartments.findOne).toBeCalledTimes(1);
@@ -305,7 +305,7 @@ describe("Departments Service", () => {
     });
 
     it("should try to update with an invalid id", async () => {
-      await expect(service.updatePut({ id: 3 }, { description: "Test 03", name: "Test 03" })).rejects.toThrow(
+      await expect(service.updatePut(3, { description: "Test 03", name: "Test 03" })).rejects.toThrow(
         new NotFoundException("Departamento não encontrado"),
       );
       expect(mockSequelizeDepartments.findByPk).toBeCalledTimes(1);

@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-
 import { CreateVacancyDto, UpdateVacancyPatchDto, UpdateVacancyPutDto } from "./dto";
 import { Departments } from "../departments/model/departments.model";
 import { Vacancies } from "./model/vacancies.model";
@@ -15,15 +14,17 @@ export class VacanciesService {
   ) {}
 
   async create(Cdto: CreateVacancyDto) {
-    const departmentExists = await this.departmentsModel.findByPk(Cdto.iDepartment);
+    const { description, iDepartment, requirements, title } = Cdto;
+
+    const departmentExists = await this.departmentsModel.findByPk(iDepartment);
 
     if (!departmentExists) throw new NotFoundException("Departamento não encontrado");
 
     await this.vacanciesModel.create({
-      description: Cdto.description,
-      iDepartment: Cdto.iDepartment,
-      requirements: Cdto.requirements,
-      title: Cdto.title,
+      description,
+      iDepartment,
+      requirements,
+      title,
     });
 
     return { message: "Vaga criada com sucesso" };
@@ -42,7 +43,7 @@ export class VacanciesService {
 
     if (!vacancy) throw new NotFoundException("Vaga não encontrada");
 
-    await this.vacanciesModel.destroy({ where: { id: id } });
+    await this.vacanciesModel.destroy({ where: { id } });
 
     return { message: "Vaga excluída com sucesso" };
   }
@@ -54,22 +55,24 @@ export class VacanciesService {
   }
 
   async updatePatch(id: number, Udto: UpdateVacancyPatchDto) {
+    const { description, iDepartment, requirements, title } = Udto;
+
     const vacancy = await this.vacanciesModel.findByPk(id);
 
     if (!vacancy) throw new NotFoundException("Vaga não encontrada");
 
-    if (Udto.iDepartment) {
-      const departmentExists = await this.departmentsModel.findByPk(Udto.iDepartment);
+    if (iDepartment) {
+      const departmentExists = await this.departmentsModel.findByPk(iDepartment);
 
       if (!departmentExists) throw new NotFoundException("Departamento não encontrado");
     }
 
     await this.vacanciesModel.update(
       {
-        description: Udto.description,
-        iDepartment: Udto.iDepartment,
-        requirements: Udto.requirements,
-        title: Udto.title,
+        description,
+        iDepartment,
+        requirements,
+        title,
       },
       { where: { id } },
     );
@@ -80,20 +83,22 @@ export class VacanciesService {
   }
 
   async updatePut(id: number, Udto: UpdateVacancyPutDto) {
+    const { description, iDepartment, requirements, title } = Udto;
+
     const vacancy = await this.vacanciesModel.findByPk(id);
 
     if (!vacancy) throw new NotFoundException("Vaga não encontrada");
 
-    const departmentExists = await this.departmentsModel.findByPk(Udto.iDepartment);
+    const departmentExists = await this.departmentsModel.findByPk(iDepartment);
 
     if (!departmentExists) throw new NotFoundException("Departamento não encontrado");
 
     await this.vacanciesModel.update(
       {
-        description: Udto.description,
-        iDepartment: Udto.iDepartment,
-        requirements: Udto.requirements,
-        title: Udto.title,
+        description,
+        iDepartment,
+        requirements,
+        title,
       },
       { where: { id } },
     );

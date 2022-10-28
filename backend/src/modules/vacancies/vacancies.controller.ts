@@ -11,7 +11,6 @@ import {
   Put,
   UseGuards,
 } from "@nestjs/common";
-
 import { JwtGuard } from "../../auth/guard";
 import { CreateVacancyDto, UpdateVacancyPatchDto, UpdateVacancyPutDto } from "./dto";
 import { VacanciesService } from "./vacancies.service";
