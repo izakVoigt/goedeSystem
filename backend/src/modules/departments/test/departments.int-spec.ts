@@ -2,7 +2,6 @@ import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Sequelize } from "sequelize-typescript";
-
 import { Departments } from "../model/departments.model";
 import { DepartmentsController } from "../departments.controller";
 import { DepartmentsModule } from "../departments.module";

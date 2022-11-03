@@ -2,7 +2,6 @@ import { NotFoundException } from "@nestjs/common";
 import { getModelToken } from "@nestjs/sequelize";
 import { Test, TestingModule } from "@nestjs/testing";
 import { DestroyOptions, UpdateOptions } from "sequelize";
-
 import { VacanciesService } from "../vacancies.service";
 import { DepartmentsService } from "../../departments/departments.service";
 import { Departments } from "../../departments/model/departments.model";

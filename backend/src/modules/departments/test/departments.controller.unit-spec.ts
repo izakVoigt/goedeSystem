@@ -1,5 +1,4 @@
 import { Test, TestingModule } from "@nestjs/testing";
-
 import { CreateDepartmentDto, UpdateDepartmentPatchDto, UpdateDepartmentPutDto } from "../dto";
 import { DepartmentsController } from "../departments.controller";
 import { DepartmentsService } from "../departments.service";

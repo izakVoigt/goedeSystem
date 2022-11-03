@@ -3,7 +3,6 @@ import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { InjectModel } from "@nestjs/sequelize";
 import { ExtractJwt, Strategy } from "passport-jwt";
-
 import { Users } from "../../modules/users/model/users.model";
 
 @Injectable()

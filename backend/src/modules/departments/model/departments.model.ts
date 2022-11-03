@@ -11,7 +11,6 @@ import {
   Unique,
   UpdatedAt,
 } from "sequelize-typescript";
-
 import { Users } from "../../users/model/users.model";
 import { Vacancies } from "../../vacancies/model/vacancies.model";
 

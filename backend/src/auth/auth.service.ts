@@ -3,7 +3,6 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/sequelize";
-
 import { AuthDto } from "./dto";
 import { Users } from "../modules/users/model/users.model";
 
@@ -17,11 +16,13 @@ export class AuthService {
   ) {}
 
   async login(dto: AuthDto) {
-    const user = await this.userModel.findOne({ where: { email: dto.email } });
+    const { email, password } = dto;
+
+    const user = await this.userModel.findOne({ where: { email } });
 
     if (!user) throw new BadRequestException("E-mail ou senha inválidos");
 
-    const pwMatches = await argon.verify(user.password, dto.password);
+    const pwMatches = await argon.verify(user.password, password);
 
     if (!pwMatches) throw new BadRequestException("E-mail ou senha inválidos");
 

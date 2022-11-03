@@ -15,7 +15,6 @@ import {
   IsEmail,
 } from "sequelize-typescript";
 import { brazilianStates } from "../../../util/enum/brazilianStates.enum";
-
 import { Departments } from "../../departments/model/departments.model";
 
 @Table

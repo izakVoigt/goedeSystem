@@ -11,7 +11,6 @@ import {
   PrimaryKey,
   UpdatedAt,
 } from "sequelize-typescript";
-
 import { Departments } from "../../departments/model/departments.model";
 
 @Table
