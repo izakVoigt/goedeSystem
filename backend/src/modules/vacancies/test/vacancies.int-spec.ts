@@ -44,8 +44,6 @@ describe("Vacancies module", () => {
     departmentsService = module.get<DepartmentsService>(DepartmentsService);
     sequelize = module.get<Sequelize>(Sequelize);
     vacanciesService = module.get<VacanciesService>(VacanciesService);
-
-    await createDepartment();
   });
   afterAll(async () => {
     await sequelize.dropAllSchemas({ logging: false });
@@ -141,7 +139,7 @@ describe("Vacancies module", () => {
       expect(validation.list.length).toEqual(0);
     });
 
-    it("should destroy a vacancy", async () => {
+    it("should try to destroy a vacancy with an invalid id", async () => {
       const id = 1;
 
       await createDepartment();

@@ -7,6 +7,7 @@ import { databaseOptions } from "./config/database.config";
 
 import { AuthModule } from "./auth/auth.module";
 import { DepartmentsModule } from "./modules/departments/departments.module";
+import { NotificationsModule } from "./modules/notifications/notifications.module";
 import { RootModule } from "./modules/root/root.module";
 import { UsersModule } from "./modules/users/users.module";
 import { VacanciesModule } from "./modules/vacancies/vacancies.module";
@@ -21,6 +22,7 @@ import { VacanciesModule } from "./modules/vacancies/vacancies.module";
     }),
     AuthModule,
     DepartmentsModule,
+    NotificationsModule,
     RootModule,
     UsersModule,
     VacanciesModule,

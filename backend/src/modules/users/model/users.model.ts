@@ -13,9 +13,11 @@ import {
   Unique,
   UpdatedAt,
   IsEmail,
+  HasOne,
 } from "sequelize-typescript";
 import { brazilianStates } from "../../../util/enum/brazilianStates.enum";
 import { Departments } from "../../departments/model/departments.model";
+import { Notifications } from "../../notifications/model/notifications.model";
 
 @Table
 export class Users extends Model {
@@ -116,4 +118,7 @@ export class Users extends Model {
 
   @BelongsTo(() => Departments)
   department: Departments;
+
+  @HasOne(() => Notifications)
+  notification: Notifications;
 }
