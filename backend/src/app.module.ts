@@ -6,6 +6,7 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { databaseOptions } from "./config/database.config";
 
 import { AuthModule } from "./auth/auth.module";
+import { ContactsModule } from "./modules/contacts/contacts.module";
 import { DepartmentsModule } from "./modules/departments/departments.module";
 import { NotificationsModule } from "./modules/notifications/notifications.module";
 import { RootModule } from "./modules/root/root.module";
@@ -21,6 +22,7 @@ import { VacanciesModule } from "./modules/vacancies/vacancies.module";
       limit: 10,
     }),
     AuthModule,
+    ContactsModule,
     DepartmentsModule,
     NotificationsModule,
     RootModule,
