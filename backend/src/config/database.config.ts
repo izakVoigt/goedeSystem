@@ -5,6 +5,7 @@ dotenv.config({ path: ".env" });
 
 import { Departments } from "../modules/departments/model/departments.model";
 import { Notifications } from "../modules/notifications/model/notifications.model";
+import { Resumes } from "../modules/resumes/model/resumes.model";
 import { Users } from "../modules/users/model/users.model";
 import { Vacancies } from "../modules/vacancies/model/vacancies.model";
 
@@ -14,6 +15,6 @@ export const databaseOptions: SequelizeModuleOptions = {
   port: parseInt(process.env.DATABASE_ROOT_PORT),
   username: process.env.DATABASE_ROOT_USER,
   database: process.env.DATABASE_ROOT_DB,
-  models: [Departments, Notifications, Users, Vacancies],
+  models: [Departments, Notifications, Resumes, Users, Vacancies],
   logging: false,
 };

@@ -11,6 +11,7 @@ import {
   Unique,
   UpdatedAt,
 } from "sequelize-typescript";
+import { Resumes } from "../../resumes/model/resumes.model";
 import { Users } from "../../users/model/users.model";
 import { Vacancies } from "../../vacancies/model/vacancies.model";
 
@@ -40,6 +41,9 @@ export class Departments extends Model {
   @UpdatedAt
   @Column
   updatedAt: Date;
+
+  @HasMany(() => Resumes)
+  resumes: Resumes[];
 
   @HasMany(() => Users)
   users: Users[];
