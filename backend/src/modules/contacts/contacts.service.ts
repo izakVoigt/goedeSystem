@@ -1,25 +1,28 @@
-import * as nodemailer from "nodemailer";
 import { Injectable, BadRequestException, InternalServerErrorException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { MessageContactDto } from "./dto";
 import { Users } from "../users/model/users.model";
 import { Notifications } from "../notifications/model/notifications.model";
-import smtpConfig from "../../config/smtp.config";
-import htmlContactMessage from "../../util/html/message";
+import { MailSender } from "../../util/mailSender";
+import contactMessage from "../../util/html/contactMessage";
 
 @Injectable()
 export class ContactsService {
+  private sender: MailSender;
+
   constructor(
     @InjectModel(Users)
     private usersModel: typeof Users,
-  ) {}
+  ) {
+    this.sender = new MailSender();
+  }
 
   async sendMessageContact(dto: MessageContactDto) {
     const { name, email, phone, subject, message, terms } = dto;
 
     if (!terms) throw new BadRequestException("Aceite os termos de privacidade para enviar a mensagem");
 
-    const html = htmlContactMessage(name, email, phone, subject, message);
+    const html = contactMessage(name, email, phone, subject, message);
 
     const emailList = await this.usersModel
       .findAll({
@@ -42,28 +45,15 @@ export class ContactsService {
       throw new InternalServerErrorException("Erro ao enviar mensagem, tente novamente mais tarde");
     }
 
-    await this.nodemailer(emailList, email, "Nova mensagem recebida pelo site", html);
+    for (let i = 0; i < emailList.length; i++) {
+      const sended = await this.sender.send(emailList[i], "Nova mensagem recebida pelo site", html);
+
+      if (sended.error !== null) {
+        console.log(sended.error);
+        throw new InternalServerErrorException("Erro ao enviar mensagem, tente novamente mais tarde");
+      }
+    }
 
     return { message: "Mensagem enviada com sucesso" };
-  }
-
-  private async nodemailer(to: string | string[], replyTo: string, subject: string, html: string) {
-    const transporter = nodemailer.createTransport(smtpConfig);
-
-    let emailSended = false;
-
-    await transporter
-      .sendMail({
-        from: "Site Goede<site@goedeassessoria.com.br>",
-        to,
-        replyTo,
-        subject,
-        html,
-      })
-      .then(() => {
-        emailSended = true;
-      });
-
-    return emailSended;
   }
 }

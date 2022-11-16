@@ -1,4 +1,4 @@
-const htmlContactMessage = (name: string, email: string, phone: string, subject: string, message: string) => {
+const contactMessage = (name: string, email: string, phone: string, subject: string, message: string) => {
   return `
   <!DOCTYPE html>
   <html>
@@ -52,4 +52,4 @@ const htmlContactMessage = (name: string, email: string, phone: string, subject:
   `;
 };
 
-export default htmlContactMessage;
+export default contactMessage;

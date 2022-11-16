@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { SequelizeModule } from "@nestjs/sequelize";
+import { ScheduleModule } from "@nestjs/schedule";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { MulterModule } from "@nestjs/platform-express";
 import { databaseOptions } from "./config/database.config";
@@ -18,6 +19,7 @@ import { VacanciesModule } from "./modules/vacancies/vacancies.module";
     ConfigModule.forRoot({ isGlobal: true }),
     MulterModule.register({ dest: "./upload/" }),
     SequelizeModule.forRoot(databaseOptions),
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,
