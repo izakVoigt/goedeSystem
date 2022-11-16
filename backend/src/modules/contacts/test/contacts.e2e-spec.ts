@@ -136,7 +136,7 @@ describe("Contacts module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Mensagem enviada com sucesso");
-    });
+    }, 30000);
 
     it("should try to send contact message without accept terms", async () => {
       const data = {

@@ -1,0 +1,27 @@
+services:
+  goedeass_system:
+    image: mysql:latest
+    container_name: goedeass_system
+    command: --authentication_policy=mysql_native_password
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=goede
+      - MYSQL_USER=goede
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - goedeApi
+  goedeass_system_test:
+    image: mysql:latest
+    container_name: goedeass_system_test
+    command: --authentication_policy=mysql_native_password
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_DATABASE=goede
+      - MYSQL_USER=goede
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - goedeApi
+networks:
+  goedeApi:
