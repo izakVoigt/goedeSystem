@@ -1,5 +1,5 @@
 import * as fs from "fs-extra";
-import { Injectable, InternalServerErrorException, NotFoundException, StreamableFile } from "@nestjs/common";
+import { Injectable, NotFoundException, StreamableFile } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreateResumeDto, UpdateResumePatchDto, UpdateResumePutDto } from "./dto";
 import { Departments } from "../departments/model/departments.model";
@@ -36,7 +36,7 @@ export class ResumesService {
   }
 
   async data(id: number) {
-    const data = await this.resumesModel.findByPk(id);
+    const data = await this.resumesModel.findByPk(id, { attributes: { exclude: ["filePath"] } });
 
     if (!data) {
       throw new NotFoundException("Currículo não encontrado");
