@@ -1,6 +1,7 @@
 import * as fs from "fs-extra";
 import { Injectable, NotFoundException, StreamableFile } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { Response } from "express";
 import { CreateResumeDto, UpdateResumePatchDto, UpdateResumePutDto } from "./dto";
 import { Departments } from "../departments/model/departments.model";
 import { Resumes } from "./model/resumes.model";
@@ -59,14 +60,19 @@ export class ResumesService {
     return { message: "Currículo excluído com sucesso" };
   }
 
-  async file(id: number) {
+  async file(response: Response, id: number) {
     const resume = await this.resumesModel.findByPk(id);
 
     if (!resume) throw new NotFoundException("Currículo não encontrado");
 
-    const file = await fs.readFile(resume.filePath);
+    const fileBuffer = await fs.readFile(resume.filePath);
 
-    return new StreamableFile(file);
+    response.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": 'attachment; filename="FormularioPedidoExercicioDireitosTitular.pdf"',
+    });
+
+    return new StreamableFile(fileBuffer);
   }
 
   async list() {

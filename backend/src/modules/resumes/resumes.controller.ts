@@ -13,11 +13,13 @@ import {
   Post,
   Put,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { Response } from "express";
 import { JwtGuard } from "../../auth/guard";
 import { CreateResumeDto, UpdateResumePatchDto, UpdateResumePutDto } from "./dto";
 import { ResumesService } from "./resumes.service";
@@ -65,8 +67,11 @@ export class ResumesController {
 
   @UseGuards(JwtGuard)
   @Get("file/:id")
-  file(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
-    return this.ResumesService.file(id);
+  file(
+    @Res({ passthrough: true }) response: Response,
+    @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
+  ) {
+    return this.ResumesService.file(response, id);
   }
 
   @UseGuards(JwtGuard)
