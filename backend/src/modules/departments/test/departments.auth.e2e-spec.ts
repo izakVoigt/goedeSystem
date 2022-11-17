@@ -28,8 +28,7 @@ describe("Department auth module", () => {
     it("should try to get departments list without authentication", async () => {
       const response = await request(app.getHttpServer()).get("/departments");
 
-      expect(response.statusCode).toEqual(401);
-      expect(response.body.message).toEqual("Unauthorized");
+      expect(response.statusCode).toEqual(200);
     });
   });
 

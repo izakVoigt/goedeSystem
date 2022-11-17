@@ -18,7 +18,17 @@ describe("Department module", () => {
     await app.close();
   });
 
-  it("/ (GET)", () => {
-    return request(app.getHttpServer()).get("/").expect(200).expect({ message: "Goede API" });
+  it("/ (GET)", async () => {
+    const req = await request(app.getHttpServer()).get("/");
+
+    expect(req.statusCode).toEqual(200);
+    expect(req.body.message).toEqual("Goede API v1.0");
+  });
+
+  it("/lgpd/form (GET)", async () => {
+    const req = await request(app.getHttpServer()).get("/lgpd/form");
+
+    expect(req.statusCode).toEqual(200);
+    expect(req.type).toEqual("application/pdf");
   });
 });

@@ -57,9 +57,6 @@ describe("Department module", () => {
       const response = await request(app.getHttpServer()).get("/departments");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.list[0].id).toEqual(1);
-      expect(response.body.list[0].description).toEqual("Test 01");
-      expect(response.body.list[0].name).toEqual("Test 01");
     });
 
     it("should list all departments with an empty list", async () => {
