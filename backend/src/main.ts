@@ -3,9 +3,7 @@ import * as bodyParser from "body-parser";
 import * as responseTime from "response-time";
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-
 import { corsOptions } from "./config/cors.config";
-
 import { AppModule } from "./app.module";
 
 async function bootstrap() {

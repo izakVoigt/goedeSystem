@@ -15,11 +15,11 @@ import { JwtGuard } from "../../auth/guard";
 import { CreateDepartmentDto, UpdateDepartmentPatchDto, UpdateDepartmentPutDto } from "./dto";
 import { DepartmentsService } from "./departments.service";
 
-@UseGuards(JwtGuard)
 @Controller("departments")
 export class DepartmentsController {
   constructor(private DepartmentsService: DepartmentsService) {}
 
+  @UseGuards(JwtGuard)
   @Post()
   create(@Body() Cdto: CreateDepartmentDto) {
     return this.DepartmentsService.create(Cdto);
@@ -30,16 +30,19 @@ export class DepartmentsController {
     return this.DepartmentsService.list();
   }
 
+  @UseGuards(JwtGuard)
   @Delete(":id")
   destroy(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
     return this.DepartmentsService.destroy(id);
   }
 
+  @UseGuards(JwtGuard)
   @Get(":id")
   data(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
     return this.DepartmentsService.data(id);
   }
 
+  @UseGuards(JwtGuard)
   @Patch(":id")
   updatePatch(
     @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
@@ -48,6 +51,7 @@ export class DepartmentsController {
     return this.DepartmentsService.updatePatch(id, Udto);
   }
 
+  @UseGuards(JwtGuard)
   @Put(":id")
   updatePut(
     @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,

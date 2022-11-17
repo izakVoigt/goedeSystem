@@ -13,6 +13,13 @@ import { ResumesModule } from "./modules/resumes/resumes.module";
 import { RootModule } from "./modules/root/root.module";
 import { UsersModule } from "./modules/users/users.module";
 import { VacanciesModule } from "./modules/vacancies/vacancies.module";
+import { ApplicationInit } from "./util/applicationInit";
+
+import { Departments } from "./modules/departments/model/departments.model";
+import { Notifications } from "./modules/notifications/model/notifications.model";
+import { Resumes } from "./modules/resumes/model/resumes.model";
+import { Users } from "./modules/users/model/users.model";
+import { Vacancies } from "./modules/vacancies/model/vacancies.model";
 
 @Module({
   imports: [
@@ -24,6 +31,7 @@ import { VacanciesModule } from "./modules/vacancies/vacancies.module";
       ttl: 60,
       limit: 10,
     }),
+    SequelizeModule.forFeature([Departments, Notifications, Resumes, Users, Vacancies]),
     AuthModule,
     ContactsModule,
     DepartmentsModule,
@@ -33,5 +41,6 @@ import { VacanciesModule } from "./modules/vacancies/vacancies.module";
     UsersModule,
     VacanciesModule,
   ],
+  providers: [ApplicationInit],
 })
 export class AppModule {}

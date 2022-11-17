@@ -44,7 +44,7 @@ export class DepartmentsService {
   }
 
   async list() {
-    const list = await this.departmentModel.findAll({ order: [["name", "ASC"]] });
+    const list = await this.departmentModel.findAll({ attributes: ["name"], order: [["name", "ASC"]] });
 
     return { list };
   }
