@@ -1,13 +1,12 @@
 import * as dotenv from "dotenv";
 import { SequelizeModuleOptions } from "@nestjs/sequelize";
-
-dotenv.config({ path: ".env" });
-
 import { Departments } from "../modules/departments/model/departments.model";
 import { Notifications } from "../modules/notifications/model/notifications.model";
 import { Resumes } from "../modules/resumes/model/resumes.model";
 import { Users } from "../modules/users/model/users.model";
 import { Vacancies } from "../modules/vacancies/model/vacancies.model";
+
+dotenv.config({ path: ".env" });
 
 export const databaseOptions: SequelizeModuleOptions = {
   dialect: "mysql",

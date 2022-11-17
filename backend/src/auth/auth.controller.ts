@@ -4,11 +4,11 @@ import { AuthService } from "./auth.service";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private AuthService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
   @Post("login")
   login(@Body() dto: AuthDto) {
-    return this.AuthService.login(dto);
+    return this.authService.login(dto);
   }
 }

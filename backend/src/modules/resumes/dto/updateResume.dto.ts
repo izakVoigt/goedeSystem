@@ -1,7 +1,10 @@
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class UpdateResumePatchDto {
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Id do departamento deve ser um número" },
+  )
   iDepartment?: number;
 
   @IsString({ message: "Observações deve ser um texto" })
@@ -12,7 +15,10 @@ export class UpdateResumePatchDto {
 }
 
 export class UpdateResumePutDto {
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Id do departamento deve ser um número" },
+  )
   @IsNotEmpty({ message: "Informe um departamento" })
   iDepartment: number;
 

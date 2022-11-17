@@ -24,15 +24,6 @@ describe("notifications auth module", () => {
     await app.close();
   });
 
-  describe("/notifications (GET)", () => {
-    it("should try to get notifications list without authentication", async () => {
-      const response = await request(app.getHttpServer()).get("/notifications");
-
-      expect(response.statusCode).toEqual(401);
-      expect(response.body.message).toEqual("Unauthorized");
-    });
-  });
-
   describe("/notifications/:id (GET)", () => {
     it("should try to get notification id 1 data without authentication", async () => {
       const response = await request(app.getHttpServer()).get("/notifications/1");

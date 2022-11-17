@@ -5,7 +5,7 @@ export class MessageContactDto {
   @IsNotEmpty({ message: "Informe um nome" })
   name: string;
 
-  @IsEmail()
+  @IsEmail({ ignore_max_length: true }, { message: "Informe um formato de e-mail válido" })
   @IsNotEmpty({ message: "Informe um e-mail" })
   email: string;
 

@@ -17,28 +17,28 @@ import { VacanciesService } from "./vacancies.service";
 
 @Controller("vacancies")
 export class VacanciesController {
-  constructor(private readonly VacanciesService: VacanciesService) {}
+  constructor(private readonly vacanciesService: VacanciesService) {}
 
   @UseGuards(JwtGuard)
   @Post()
   create(@Body() Cdto: CreateVacancyDto) {
-    return this.VacanciesService.create(Cdto);
+    return this.vacanciesService.create(Cdto);
   }
 
   @Get()
   list() {
-    return this.VacanciesService.list();
+    return this.vacanciesService.list();
   }
 
   @UseGuards(JwtGuard)
   @Delete(":id")
   destroy(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
-    return this.VacanciesService.destroy(id);
+    return this.vacanciesService.destroy(id);
   }
 
   @Get(":id")
   data(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
-    return this.VacanciesService.data(id);
+    return this.vacanciesService.data(id);
   }
 
   @UseGuards(JwtGuard)
@@ -47,7 +47,7 @@ export class VacanciesController {
     @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
     @Body() Udto: UpdateVacancyPatchDto,
   ) {
-    return this.VacanciesService.updatePatch(id, Udto);
+    return this.vacanciesService.updatePatch(id, Udto);
   }
 
   @UseGuards(JwtGuard)
@@ -56,6 +56,6 @@ export class VacanciesController {
     @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
     @Body() Udto: UpdateVacancyPutDto,
   ) {
-    return this.VacanciesService.updatePut(id, Udto);
+    return this.vacanciesService.updatePut(id, Udto);
   }
 }

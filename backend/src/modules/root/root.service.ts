@@ -5,7 +5,7 @@ import { Response } from "express";
 @Injectable()
 export class RootService {
   root() {
-    return { message: "Goede API" };
+    return { message: "Goede API v1.0" };
   }
 
   async lgpdFile(response: Response) {

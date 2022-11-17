@@ -1,15 +1,4 @@
-import {
-  IsBoolean,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from "class-validator";
-import { brazilianStates } from "../../../util/enum/brazilianStates.enum";
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
   @IsString({ message: "Endereço deve ser um texto" })
@@ -24,14 +13,16 @@ export class CreateUserDto {
   @IsNotEmpty({ message: "Informe um bairro" })
   addressDistrict: string;
 
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Número de endereço deve ser um número" },
+  )
   @IsNotEmpty({ message: "Informe um número de endereço" })
   addressNumber: number;
 
   @IsString({ message: "Estado deve ser um texto" })
-  @IsEnum(brazilianStates, { message: "Informe um estado brasileiro" })
   @IsNotEmpty({ message: "Informe um estado" })
-  addressState: brazilianStates;
+  addressState: string;
 
   @IsString({ message: "CEP deve ser um texto" })
   @IsNotEmpty({ message: "Informe um CEP" })
@@ -45,7 +36,7 @@ export class CreateUserDto {
   @IsNotEmpty({ message: "Informe um CPF" })
   cpf: string;
 
-  @IsEmail()
+  @IsEmail({ ignore_max_length: true }, { message: "Informe um formato de e-mail válido" })
   @IsNotEmpty({ message: "Informe um e-mail" })
   email: string;
 
@@ -53,7 +44,10 @@ export class CreateUserDto {
   @IsNotEmpty({ message: "Informe uma data de admissão" })
   hireDate: string;
 
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Id do departamento deve ser um número" },
+  )
   @IsNotEmpty({ message: "Informe um departamento" })
   iDepartment: number;
 

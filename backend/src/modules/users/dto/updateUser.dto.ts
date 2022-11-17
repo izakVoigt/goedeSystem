@@ -1,15 +1,4 @@
-import {
-  IsBoolean,
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from "class-validator";
-import { brazilianStates } from "../../../util/enum/brazilianStates.enum";
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class UpdateUserPatchDto {
   @IsBoolean({ message: "Ativo deve ser verdadeiro ou falso" })
@@ -24,12 +13,14 @@ export class UpdateUserPatchDto {
   @IsString({ message: "Bairro deve ser um texto" })
   addressDistrict?: string;
 
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Número de endereço deve ser um número" },
+  )
   addressNumber?: number;
 
   @IsString({ message: "Estado deve ser um texto" })
-  @IsEnum(brazilianStates, { message: "Informe um estado brasileiro" })
-  addressState?: brazilianStates;
+  addressState?: string;
 
   @IsString({ message: "CEP deve ser um texto" })
   addressZipCode?: string;
@@ -40,7 +31,7 @@ export class UpdateUserPatchDto {
   @IsString({ message: "CPF deve ser um texto" })
   cpf?: string;
 
-  @IsEmail()
+  @IsEmail({ ignore_max_length: true }, { message: "Informe um formato de e-mail válido" })
   email?: string;
 
   @IsString({ message: "Data de demissão deve ser um texto" })
@@ -49,7 +40,10 @@ export class UpdateUserPatchDto {
   @IsString({ message: "Data de admissão deve ser um texto" })
   hireDate?: string;
 
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Id do departamento deve ser um número" },
+  )
   iDepartment?: number;
 
   @IsString({ message: "Nome deve ser um texto" })
@@ -106,14 +100,16 @@ export class UpdateUserPutDto {
   @IsNotEmpty({ message: "Informe um bairro" })
   addressDistrict: string;
 
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Número de endereço deve ser um número" },
+  )
   @IsNotEmpty({ message: "Informe um número de endereço" })
   addressNumber: number;
 
   @IsString({ message: "Estado deve ser um texto" })
-  @IsEnum(brazilianStates, { message: "Informe um estado brasileiro" })
   @IsNotEmpty({ message: "Informe um estado" })
-  addressState: brazilianStates;
+  addressState: string;
 
   @IsString({ message: "CEP deve ser um texto" })
   @IsNotEmpty({ message: "Informe um CEP" })
@@ -127,7 +123,7 @@ export class UpdateUserPutDto {
   @IsNotEmpty({ message: "Informe um CPF" })
   cpf: string;
 
-  @IsEmail()
+  @IsEmail({ ignore_max_length: true }, { message: "Informe um formato de e-mail válido" })
   @IsNotEmpty({ message: "Informe um e-mail" })
   email: string;
 
@@ -138,7 +134,10 @@ export class UpdateUserPutDto {
   @IsNotEmpty({ message: "Informe uma data de admissão" })
   hireDate: string;
 
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Id do departamento deve ser um número" },
+  )
   @IsNotEmpty({ message: "Informe um departamento" })
   iDepartment: number;
 

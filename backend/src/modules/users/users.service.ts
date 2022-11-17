@@ -98,7 +98,10 @@ export class UsersService {
   }
 
   async list() {
-    const list = await this.usersModel.findAll({ attributes: { exclude: ["password"] }, order: [["name", "ASC"]] });
+    const list = await this.usersModel.findAll({
+      attributes: { include: ["id", "iDepartment", "name"] },
+      order: [["name", "ASC"]],
+    });
 
     return { list };
   }

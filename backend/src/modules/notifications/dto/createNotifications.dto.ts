@@ -1,7 +1,10 @@
 import { IsBoolean, IsNotEmpty, IsNumber } from "class-validator";
 
 export class CreateNotificationDto {
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Id do usuário deve ser um número" },
+  )
   @IsNotEmpty({ message: "Informe o id do usuário" })
   iUser: number;
 

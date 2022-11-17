@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateResumeDto {
-  @IsEmail()
+  @IsEmail({ ignore_max_length: true }, { message: "Informe um formato de e-mail válido" })
   @IsNotEmpty({ message: "Informe um e-mail" })
   email: string;
 

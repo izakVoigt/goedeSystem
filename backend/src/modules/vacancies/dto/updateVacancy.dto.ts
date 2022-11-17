@@ -4,7 +4,10 @@ export class UpdateVacancyPatchDto {
   @IsString({ message: "Descrição deve ser um texto" })
   description?: string;
 
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Id do departamento deve ser um número" },
+  )
   iDepartment?: number;
 
   @IsString({ message: "Requisitos deve ser um texto" })
@@ -19,7 +22,10 @@ export class UpdateVacancyPutDto {
   @IsNotEmpty({ message: "Informe uma descrição" })
   description: string;
 
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Id do departamento deve ser um número" },
+  )
   @IsNotEmpty({ message: "Informe um departamento" })
   iDepartment: number;
 

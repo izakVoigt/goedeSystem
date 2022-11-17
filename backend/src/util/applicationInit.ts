@@ -135,10 +135,5 @@ export class ApplicationInit implements OnApplicationBootstrap {
           .catch((err) => console.log(err));
       }
     }
-
-    const departments = await this.departmentModel.findAll();
-    const users = await this.usersModel.findAll();
-
-    console.log(departments, users);
   }
 }

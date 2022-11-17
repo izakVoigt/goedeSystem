@@ -80,33 +80,6 @@ describe("Notifications module", () => {
     });
   };
 
-  describe("/notifications (GET)", () => {
-    beforeEach(async () => {
-      await sequelize.dropAllSchemas({ logging: false });
-      await sequelize.sync();
-
-      await createDepartment();
-      await createUser();
-      await createNotification();
-    });
-
-    it("should get notifications list with 1 notification", async () => {
-      const response = await request(app.getHttpServer()).get("/notifications");
-
-      expect(response.statusCode).toEqual(200);
-      expect(response.body.list.length).toEqual(1);
-    });
-
-    it("should get notifications list without any notification", async () => {
-      await notificationsService.destroy(1);
-
-      const response = await request(app.getHttpServer()).get("/notifications");
-
-      expect(response.statusCode).toEqual(200);
-      expect(response.body.list.length).toEqual(0);
-    });
-  });
-
   describe("/notifications/:id (GET)", () => {
     beforeEach(async () => {
       await sequelize.dropAllSchemas({ logging: false });
@@ -173,11 +146,8 @@ describe("Notifications module", () => {
 
       const response = await request(app.getHttpServer()).post("/notifications").send(data);
 
-      const validation = await notificationsService.list();
-
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Usuário não encontrado");
-      expect(validation.list.length).toEqual(0);
     });
 
     it("should try to create a new notification with an already used user", async () => {
@@ -192,11 +162,8 @@ describe("Notifications module", () => {
 
       const response = await request(app.getHttpServer()).post("/notifications").send(data);
 
-      const validation = await notificationsService.list();
-
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual("Usuário já tem notificações cadastradas");
-      expect(validation.list.length).toEqual(1);
     });
   });
 
@@ -213,21 +180,15 @@ describe("Notifications module", () => {
     it("should delete the notification id 1", async () => {
       const response = await request(app.getHttpServer()).delete("/notifications/1");
 
-      const validation = await notificationsService.list();
-
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Notificação excluída com sucesso");
-      expect(validation.list.length).toEqual(0);
     });
 
     it("should try to delete an invalid notification", async () => {
       const response = await request(app.getHttpServer()).delete("/notifications/2");
 
-      const validation = await notificationsService.list();
-
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Notificação não encontrada");
-      expect(validation.list.length).toEqual(1);
     });
   });
 

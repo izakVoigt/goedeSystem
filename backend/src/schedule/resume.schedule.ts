@@ -21,7 +21,7 @@ export class ResumesScheduleTasks {
   }
 
   // Every monday to friday at 06:00am
-  @Cron("0 0 6 * * 1-5", { name: "resumesNotRevisedNotification", timeZone: "America/Sao_Paulo" })
+  @Cron("0 40 13 * * 1-5", { name: "resumesNotRevisedNotification", timeZone: "America/Sao_Paulo" })
   async resumesNotRevised() {
     const list = await this.resumesModel.findAll({ where: { revised: false } });
 

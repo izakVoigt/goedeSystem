@@ -30,7 +30,7 @@ const maxFileSize = 5242880;
 
 @Controller("resumes")
 export class ResumesController {
-  constructor(private ResumesService: ResumesService) {}
+  constructor(private readonly resumesService: ResumesService) {}
 
   @Post()
   @UseInterceptors(
@@ -50,19 +50,19 @@ export class ResumesController {
     if (!file || req.fileValidationError) {
       throw new BadRequestException(req.fileValidationError);
     }
-    return this.ResumesService.create(file, Cdto);
+    return this.resumesService.create(file, Cdto);
   }
 
   @UseGuards(JwtGuard)
   @Get()
   list() {
-    return this.ResumesService.list();
+    return this.resumesService.list();
   }
 
   @UseGuards(JwtGuard)
   @Delete(":id")
   destroy(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
-    return this.ResumesService.destroy(id);
+    return this.resumesService.destroy(id);
   }
 
   @UseGuards(JwtGuard)
@@ -71,13 +71,13 @@ export class ResumesController {
     @Res({ passthrough: true }) response: Response,
     @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
   ) {
-    return this.ResumesService.file(response, id);
+    return this.resumesService.file(response, id);
   }
 
   @UseGuards(JwtGuard)
   @Get(":id")
   data(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
-    return this.ResumesService.data(id);
+    return this.resumesService.data(id);
   }
 
   @UseGuards(JwtGuard)
@@ -86,7 +86,7 @@ export class ResumesController {
     @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
     @Body() Udto: UpdateResumePatchDto,
   ) {
-    return this.ResumesService.updatePatch(id, Udto);
+    return this.resumesService.updatePatch(id, Udto);
   }
 
   @UseGuards(JwtGuard)
@@ -95,6 +95,6 @@ export class ResumesController {
     @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
     @Body() Udto: UpdateResumePutDto,
   ) {
-    return this.ResumesService.updatePut(id, Udto);
+    return this.resumesService.updatePut(id, Udto);
   }
 }

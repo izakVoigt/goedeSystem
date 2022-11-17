@@ -5,7 +5,10 @@ export class CreateVacancyDto {
   @IsNotEmpty({ message: "Informe uma descrição" })
   description: string;
 
-  @IsNumber()
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 },
+    { message: "Id do departamento deve ser um número" },
+  )
   @IsNotEmpty({ message: "Informe um departamento" })
   iDepartment: number;
 

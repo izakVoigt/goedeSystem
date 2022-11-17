@@ -25,11 +25,6 @@ export class NotificationsController {
     return this.notificationsService.create(Cdto);
   }
 
-  @Get()
-  list() {
-    return this.notificationsService.list();
-  }
-
   @Delete(":id")
   destroy(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
     return this.notificationsService.destroy(id);

@@ -18,26 +18,26 @@ import { UsersService } from "./users.service";
 @UseGuards(JwtGuard)
 @Controller("users")
 export class UsersController {
-  constructor(private UsersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Post()
   create(@Body() Cdto: CreateUserDto) {
-    return this.UsersService.create(Cdto);
+    return this.usersService.create(Cdto);
   }
 
   @Get()
   list() {
-    return this.UsersService.list();
+    return this.usersService.list();
   }
 
   @Delete(":id")
   destroy(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
-    return this.UsersService.destroy(id);
+    return this.usersService.destroy(id);
   }
 
   @Get(":id")
   data(@Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number) {
-    return this.UsersService.data(id);
+    return this.usersService.data(id);
   }
 
   @Patch(":id")
@@ -45,7 +45,7 @@ export class UsersController {
     @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
     @Body() Udto: UpdateUserPatchDto,
   ) {
-    return this.UsersService.updatePatch(id, Udto);
+    return this.usersService.updatePatch(id, Udto);
   }
 
   @Put(":id")
@@ -53,6 +53,6 @@ export class UsersController {
     @Param("id", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) id: number,
     @Body() Udto: UpdateUserPutDto,
   ) {
-    return this.UsersService.updatePut(id, Udto);
+    return this.usersService.updatePut(id, Udto);
   }
 }

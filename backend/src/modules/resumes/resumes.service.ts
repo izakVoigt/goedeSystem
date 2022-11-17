@@ -69,14 +69,14 @@ export class ResumesService {
 
     response.set({
       "Content-Type": "application/pdf",
-      "Content-Disposition": 'attachment; filename="FormularioPedidoExercicioDireitosTitular.pdf"',
+      "Content-Disposition": "attachment; filename=`Currículo - ${resume.name}.pdf`",
     });
 
     return new StreamableFile(fileBuffer);
   }
 
   async list() {
-    const list = await this.resumesModel.findAll({ attributes: { exclude: ["filePath"] } });
+    const list = await this.resumesModel.findAll({ attributes: { include: ["id", "name", "iDepartment"] } });
 
     return { list };
   }

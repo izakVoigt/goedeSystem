@@ -13,6 +13,8 @@ import { ResumesModule } from "./modules/resumes/resumes.module";
 import { RootModule } from "./modules/root/root.module";
 import { UsersModule } from "./modules/users/users.module";
 import { VacanciesModule } from "./modules/vacancies/vacancies.module";
+
+import { ResumesScheduleTasks } from "./schedule/resume.schedule";
 import { ApplicationInit } from "./util/applicationInit";
 
 import { Departments } from "./modules/departments/model/departments.model";
@@ -41,6 +43,6 @@ import { Vacancies } from "./modules/vacancies/model/vacancies.model";
     UsersModule,
     VacanciesModule,
   ],
-  providers: [ApplicationInit],
+  providers: [ApplicationInit, ResumesScheduleTasks],
 })
 export class AppModule {}

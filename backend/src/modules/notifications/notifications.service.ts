@@ -52,12 +52,6 @@ export class NotificationsService {
     return { message: "Notificação excluída com sucesso" };
   }
 
-  async list() {
-    const list = await this.notificationsModel.findAll({ order: [["iUser", "ASC"]] });
-
-    return { list };
-  }
-
   async updatePatch(id: number, Udto: UpdateNotificationPatchDto) {
     const { notificationClient, notificationContact, notificationResume } = Udto;
 
