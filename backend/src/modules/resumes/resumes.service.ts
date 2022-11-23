@@ -76,7 +76,7 @@ export class ResumesService {
     return new StreamableFile(fileBuffer);
   }
 
-  async list(page: number, limit: number, name?: string, iDepartment?: number) {
+  async list(page: number, limit: number, name?: string, iDepartment?: string) {
     if (!page) {
       return new BadRequestException("Informe o número da página");
     }
@@ -88,7 +88,7 @@ export class ResumesService {
 
     if (name && iDepartment) {
       const list = await this.resumesModel.findAll({
-        where: { iDepartment, name: { [Op.like]: `%${name}%` } },
+        where: { iDepartment, [Op.and]: { name: { [Op.like]: `%${name}%` } } },
         attributes: ["id", "name"],
         order: [["name", "ASC"]],
         limit: limit,

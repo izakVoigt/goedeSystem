@@ -30,8 +30,8 @@ export class UsersController {
   list(
     @Query("page", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) page: number,
     @Query("limit", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) limit: number,
-    @Query("query") query: string,
-    @Query("iDepartment", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) iDepartment: number,
+    @Query("query") query?: string,
+    @Query("iDepartment") iDepartment?: string,
   ) {
     return this.usersService.list(page, limit, query, iDepartment);
   }

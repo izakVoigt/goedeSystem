@@ -59,8 +59,8 @@ export class ResumesController {
   list(
     @Query("page", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) page: number,
     @Query("limit", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) limit: number,
-    @Query("name") name: string,
-    @Query("iDepartment", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) iDepartment: number,
+    @Query("name") name?: string,
+    @Query("iDepartment") iDepartment?: string,
   ) {
     return this.resumesService.list(page, limit, name, iDepartment);
   }

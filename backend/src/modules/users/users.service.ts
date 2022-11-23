@@ -98,7 +98,7 @@ export class UsersService {
     return { message: "Usuário excluído com sucesso" };
   }
 
-  async list(page: number, limit: number, query?: string, iDepartment?: number) {
+  async list(page: number, limit: number, query?: string, iDepartment?: string) {
     if (!page) {
       return new BadRequestException("Informe o número da página");
     }
@@ -111,10 +111,10 @@ export class UsersService {
     if (query && iDepartment) {
       const list = await this.usersModel.findAll({
         where: {
-          [Op.or]: [{ name: { [Op.like]: `%${query}%` } }, { email: { [Op.like]: `%${query}%` } }],
           iDepartment,
+          [Op.and]: { [Op.or]: [{ name: { [Op.like]: `%${query}%` } }, { email: { [Op.like]: `%${query}%` } }] },
         },
-        attributes: { include: ["id", "email", "name"] },
+        attributes: ["id", "email", "name"],
         order: [["name", "ASC"]],
         limit: limit,
         offset: offset,
@@ -127,7 +127,7 @@ export class UsersService {
         where: {
           [Op.or]: [{ name: { [Op.like]: `%${query}%` } }, { email: { [Op.like]: `%${query}%` } }],
         },
-        attributes: { include: ["id", "email", "name"] },
+        attributes: ["id", "email", "name"],
         order: [["name", "ASC"]],
         limit: limit,
         offset: offset,
@@ -138,7 +138,7 @@ export class UsersService {
     if (iDepartment) {
       const list = await this.usersModel.findAll({
         where: { iDepartment },
-        attributes: { include: ["id", "email", "name"] },
+        attributes: ["id", "email", "name"],
         order: [["name", "ASC"]],
         limit: limit,
         offset: offset,
@@ -147,7 +147,7 @@ export class UsersService {
       return list;
     }
     const list = await this.usersModel.findAll({
-      attributes: { include: ["id", "email", "name"] },
+      attributes: ["id", "email", "name"],
       order: [["name", "ASC"]],
       limit: limit,
       offset: offset,

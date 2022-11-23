@@ -30,7 +30,7 @@ export class DepartmentsController {
   list(
     @Query("page", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) page: number,
     @Query("limit", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) limit: number,
-    @Query("name") name: string,
+    @Query("name") name?: string,
   ) {
     return this.departmentsService.list(page, limit, name);
   }
