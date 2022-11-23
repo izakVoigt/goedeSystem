@@ -1,4 +1,4 @@
-import { IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
   @IsString({ message: "Endereço deve ser um texto" })
@@ -65,34 +65,6 @@ export class CreateUserDto {
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, { message: "Senha muito fraca" })
   @IsNotEmpty({ message: "Informe uma senha" })
   password: string;
-
-  @IsBoolean({ message: "Permissão contábil deve ser verdadeiro ou falso" })
-  @IsNotEmpty({ message: "Informe a permissão contábil" })
-  permAccounting: boolean;
-
-  @IsBoolean({ message: "Permissão administrador deve ser verdadeiro ou falso" })
-  @IsNotEmpty({ message: "Informe a permissão administrador" })
-  permAdmin: boolean;
-
-  @IsBoolean({ message: "Permissão societário deve ser verdadeiro ou falso" })
-  @IsNotEmpty({ message: "Informe a permissão societário" })
-  permCorporate: boolean;
-
-  @IsBoolean({ message: "Permissão finanças deve ser verdadeiro ou falso" })
-  @IsNotEmpty({ message: "Informe a permissão finanças" })
-  permFinances: boolean;
-
-  @IsBoolean({ message: "Permissão RH deve ser verdadeiro ou falso" })
-  @IsNotEmpty({ message: "Informe a permissão RH" })
-  permHuman: boolean;
-
-  @IsBoolean({ message: "Permissão marketing deve ser verdadeiro ou falso" })
-  @IsNotEmpty({ message: "Informe a permissão marketing" })
-  permMarketing: boolean;
-
-  @IsBoolean({ message: "Permissão fiscal deve ser verdadeiro ou falso" })
-  @IsNotEmpty({ message: "Informe a permissão fiscal" })
-  permOversee: boolean;
 
   @IsString({ message: "Celular deve ser um texto" })
   @IsNotEmpty({ message: "Informe um celular" })

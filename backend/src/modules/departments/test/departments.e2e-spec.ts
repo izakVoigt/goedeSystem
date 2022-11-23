@@ -54,16 +54,24 @@ describe("Department module", () => {
     it("should list all departments with 1 department", async () => {
       await createDepartment();
 
-      const response = await request(app.getHttpServer()).get("/departments");
+      const response = await request(app.getHttpServer()).get("/departments?page=1&limit=10");
+
+      expect(response.statusCode).toEqual(200);
+    });
+
+    it("should list all departments with name query", async () => {
+      await createDepartment();
+
+      const response = await request(app.getHttpServer()).get("/departments?page=1&limit=10&name=Test");
 
       expect(response.statusCode).toEqual(200);
     });
 
     it("should list all departments with an empty list", async () => {
-      const response = await request(app.getHttpServer()).get("/departments");
+      const response = await request(app.getHttpServer()).get("/departments?page=1&limit=10");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.list.length).toEqual(0);
+      expect(response.body.length).toEqual(0);
     });
   });
 
@@ -79,9 +87,9 @@ describe("Department module", () => {
       const response = await request(app.getHttpServer()).get("/departments/1");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.data.id).toEqual(1);
-      expect(response.body.data.description).toEqual("Test 01");
-      expect(response.body.data.name).toEqual("Test 01");
+      expect(response.body.id).toEqual(1);
+      expect(response.body.description).toEqual("Test 01");
+      expect(response.body.name).toEqual("Test 01");
     });
 
     it("should try to get a department with an invalid id", async () => {
@@ -110,9 +118,9 @@ describe("Department module", () => {
 
       expect(response.statusCode).toEqual(201);
       expect(response.body.message).toEqual("Departamento criado com sucesso");
-      expect(validation.data.id).toEqual(1);
-      expect(validation.data.name).toEqual(data.name);
-      expect(validation.data.description).toEqual(data.description);
+      expect(validation.id).toEqual(1);
+      expect(validation.name).toEqual(data.name);
+      expect(validation.description).toEqual(data.description);
     });
 
     it("should try to create a new department with an invalid name", async () => {
@@ -125,11 +133,8 @@ describe("Department module", () => {
 
       const response = await request(app.getHttpServer()).post("/departments").send(data);
 
-      const validation = await service.list();
-
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual("Departamento já existente");
-      expect(validation.list.length).toEqual(1);
     });
   });
 
@@ -144,21 +149,15 @@ describe("Department module", () => {
 
       const response = await request(app.getHttpServer()).delete("/departments/1");
 
-      const validation = await service.list();
-
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Departamento excluído com sucesso");
-      expect(validation.list.length).toEqual(0);
     });
 
     it("should try to delete a department with an invalid id", async () => {
       const response = await request(app.getHttpServer()).delete("/departments/1");
 
-      const validation = await service.list();
-
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Departamento não encontrado");
-      expect(validation.list.length).toEqual(0);
     });
   });
 
@@ -181,7 +180,7 @@ describe("Department module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Departamento alterado com sucesso");
-      expect(validation.data.description).toEqual(data.description);
+      expect(validation.description).toEqual(data.description);
     });
 
     it("should update the name of department id 1", async () => {
@@ -197,7 +196,7 @@ describe("Department module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Departamento alterado com sucesso");
-      expect(validation.data.name).toEqual(data.name);
+      expect(validation.name).toEqual(data.name);
     });
 
     it("should try to update department with an invalid name", async () => {
@@ -214,7 +213,7 @@ describe("Department module", () => {
 
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual("Departamento já existente");
-      expect(validation.data.name).toEqual("Test 02");
+      expect(validation.name).toEqual("Test 02");
     });
 
     it("should try to update department with an invalid id", async () => {
@@ -230,7 +229,7 @@ describe("Department module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Departamento não encontrado");
-      expect(validation.data.name).toEqual("Test 01");
+      expect(validation.name).toEqual("Test 01");
     });
   });
 
@@ -254,8 +253,8 @@ describe("Department module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Departamento alterado com sucesso");
-      expect(validation.data.description).toEqual(data.description);
-      expect(validation.data.name).toEqual(data.name);
+      expect(validation.description).toEqual(data.description);
+      expect(validation.name).toEqual(data.name);
     });
 
     it("should try to update department id 1 with an invalid name", async () => {
@@ -273,8 +272,8 @@ describe("Department module", () => {
 
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual("Departamento já existente");
-      expect(validation.data.description).toEqual("Test 01");
-      expect(validation.data.name).toEqual("Test 01");
+      expect(validation.description).toEqual("Test 01");
+      expect(validation.name).toEqual("Test 01");
     });
 
     it("should try to update a department with an invalid id", async () => {
@@ -291,8 +290,8 @@ describe("Department module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Departamento não encontrado");
-      expect(validation.data.description).toEqual("Test 01");
-      expect(validation.data.name).toEqual("Test 01");
+      expect(validation.description).toEqual("Test 01");
+      expect(validation.name).toEqual("Test 01");
     });
   });
 });

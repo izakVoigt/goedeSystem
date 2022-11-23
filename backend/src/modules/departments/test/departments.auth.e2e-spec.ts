@@ -26,7 +26,7 @@ describe("Department auth module", () => {
 
   describe("/departments (GET)", () => {
     it("should try to get departments list without authentication", async () => {
-      const response = await request(app.getHttpServer()).get("/departments");
+      const response = await request(app.getHttpServer()).get("/departments?page=1&limit=10");
 
       expect(response.statusCode).toEqual(200);
     });

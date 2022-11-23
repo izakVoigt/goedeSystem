@@ -45,13 +45,6 @@ export class DepartmentsService {
   }
 
   async list(page: number, limit: number, name?: string) {
-    if (!page) {
-      return new BadRequestException("Informe o número da página");
-    }
-    if (!limit) {
-      return new BadRequestException("Informe o limite de resultados na página");
-    }
-
     const offset = (page - 1) * limit;
 
     if (name) {

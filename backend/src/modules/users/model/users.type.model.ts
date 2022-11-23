@@ -20,13 +20,6 @@ export interface IUsersModel {
   name: string;
   office: string;
   password: string;
-  permAccounting: boolean;
-  permAdmin: boolean;
-  permCorporate: boolean;
-  permFinances: boolean;
-  permHuman: boolean;
-  permMarketing: boolean;
-  permOversee: boolean;
   phone: string;
   updatedAt: Date;
 }

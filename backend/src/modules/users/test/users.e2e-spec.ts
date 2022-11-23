@@ -58,13 +58,6 @@ describe("Users module", () => {
       name: "Test 01",
       office: "Test 01",
       password: "Test.123456",
-      permAccounting: true,
-      permAdmin: true,
-      permCorporate: true,
-      permFinances: true,
-      permHuman: true,
-      permMarketing: true,
-      permOversee: true,
       phone: "(00)00000-0000",
     });
   };
@@ -84,13 +77,6 @@ describe("Users module", () => {
       name: "Test 02",
       office: "Test 02",
       password: "Test.123456",
-      permAccounting: true,
-      permAdmin: true,
-      permCorporate: true,
-      permFinances: true,
-      permHuman: true,
-      permMarketing: true,
-      permOversee: true,
       phone: "(00)00000-0000",
     });
   };
@@ -105,17 +91,47 @@ describe("Users module", () => {
       await createDepartment();
       await createUser01();
 
-      const response = await request(app.getHttpServer()).get("/users");
+      const response = await request(app.getHttpServer()).get("/users?page=1&limit=10");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.list.length).toEqual(1);
+      expect(response.body.length).toEqual(1);
+    });
+
+    it("should get users list with query and iDepartment", async () => {
+      await createDepartment();
+      await createUser01();
+
+      const response = await request(app.getHttpServer()).get("/users?page=1&limit=10&query=Test&iDepartment=1");
+
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.length).toEqual(1);
+    });
+
+    it("should get users list with query", async () => {
+      await createDepartment();
+      await createUser01();
+
+      const response = await request(app.getHttpServer()).get("/users?page=1&limit=10&query=Test");
+
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.length).toEqual(1);
+    });
+
+    it("should get users list with iDepartment", async () => {
+      await createDepartment();
+      await createUser01();
+
+      const response = await request(app.getHttpServer()).get("/users?page=1&limit=10&iDepartment=1");
+
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.length).toEqual(1);
     });
 
     it("should get users list without any user", async () => {
-      const response = await request(app.getHttpServer()).get("/users");
+      const response = await request(app.getHttpServer()).get("/users?page=1&limit=10");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.list.length).toEqual(0);
+      expect(response.body.length).toEqual(0);
     });
   });
 
@@ -132,8 +148,8 @@ describe("Users module", () => {
       const response = await request(app.getHttpServer()).get("/users/1");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.data.id).toEqual(1);
-      expect(response.body.data.email).toEqual("test01@test.com");
+      expect(response.body.id).toEqual(1);
+      expect(response.body.email).toEqual("test01@test.com");
     });
 
     it("should try to get data from user with an invalid id", async () => {
@@ -168,13 +184,6 @@ describe("Users module", () => {
         name: "Test 01",
         office: "Test 01",
         password: "Test.123456",
-        permAccounting: true,
-        permAdmin: true,
-        permCorporate: true,
-        permFinances: true,
-        permHuman: true,
-        permMarketing: true,
-        permOversee: true,
         phone: "(00)00000-0000",
       };
 
@@ -184,8 +193,8 @@ describe("Users module", () => {
 
       expect(response.statusCode).toEqual(201);
       expect(response.body.message).toEqual("Usuário criado com sucesso");
-      expect(validation.data.id).toEqual(1);
-      expect(validation.data.email).toEqual(data.email);
+      expect(validation.id).toEqual(1);
+      expect(validation.email).toEqual(data.email);
     });
 
     it("should try to create a new user with an invalid department", async () => {
@@ -204,23 +213,13 @@ describe("Users module", () => {
         name: "Test 01",
         office: "Test 01",
         password: "Test.123456",
-        permAccounting: true,
-        permAdmin: true,
-        permCorporate: true,
-        permFinances: true,
-        permHuman: true,
-        permMarketing: true,
-        permOversee: true,
         phone: "(00)00000-0000",
       };
 
       const response = await request(app.getHttpServer()).post("/users").send(data);
 
-      const validation = await usersService.list();
-
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Departamento não encontrado");
-      expect(validation.list.length).toEqual(0);
     });
 
     it("should try to create a new user with an invalid email", async () => {
@@ -242,23 +241,13 @@ describe("Users module", () => {
         name: "Test 01",
         office: "Test 01",
         password: "Test.123456",
-        permAccounting: true,
-        permAdmin: true,
-        permCorporate: true,
-        permFinances: true,
-        permHuman: true,
-        permMarketing: true,
-        permOversee: true,
         phone: "(00)00000-0000",
       };
 
       const response = await request(app.getHttpServer()).post("/users").send(data);
 
-      const validation = await usersService.list();
-
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual("E-mail já em uso");
-      expect(validation.list.length).toEqual(1);
     });
   });
 
@@ -274,21 +263,15 @@ describe("Users module", () => {
 
       const response = await request(app.getHttpServer()).delete("/users/1");
 
-      const validation = await usersService.list();
-
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Usuário excluído com sucesso");
-      expect(validation.list.length).toEqual(0);
     });
 
     it("should try to delete an invalid user", async () => {
       const response = await request(app.getHttpServer()).delete("/users/1");
 
-      const validation = await usersService.list();
-
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Usuário não encontrado");
-      expect(validation.list.length).toEqual(0);
     });
   });
 
@@ -316,7 +299,7 @@ describe("Users module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Usuário alterado com sucesso");
-      expect(validation.data.name).toEqual(data.name);
+      expect(validation.name).toEqual(data.name);
     });
 
     it("should try to update user with an invalid department id", async () => {
@@ -333,7 +316,7 @@ describe("Users module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Departamento não encontrado");
-      expect(validation.data.iDepartment).toEqual(1);
+      expect(validation.iDepartment).toEqual(1);
     });
 
     it("should try to update user with an invalid email", async () => {
@@ -351,7 +334,7 @@ describe("Users module", () => {
 
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual("E-mail já em uso");
-      expect(validation.data.email).toEqual("test01@test.com");
+      expect(validation.email).toEqual("test01@test.com");
     });
 
     it("should try to update user with an invalid id", async () => {
@@ -368,7 +351,7 @@ describe("Users module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Usuário não encontrado");
-      expect(validation.data.email).toEqual("test01@test.com");
+      expect(validation.email).toEqual("test01@test.com");
     });
   });
 
@@ -398,13 +381,6 @@ describe("Users module", () => {
         name: "Test 02",
         office: "Test 02",
         password: "Test.123456",
-        permAccounting: true,
-        permAdmin: true,
-        permCorporate: true,
-        permFinances: true,
-        permHuman: true,
-        permMarketing: true,
-        permOversee: true,
         phone: "(00)00000-0000",
       };
 
@@ -414,8 +390,8 @@ describe("Users module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Usuário alterado com sucesso");
-      expect(validation.data.email).toEqual("test02@test.com");
-      expect(validation.data.name).toEqual("Test 02");
+      expect(validation.email).toEqual("test02@test.com");
+      expect(validation.name).toEqual("Test 02");
     });
 
     it("should try to update user with an invalid department id", async () => {
@@ -438,13 +414,6 @@ describe("Users module", () => {
         name: "Test 02",
         office: "Test 02",
         password: "Test.123456",
-        permAccounting: true,
-        permAdmin: true,
-        permCorporate: true,
-        permFinances: true,
-        permHuman: true,
-        permMarketing: true,
-        permOversee: true,
         phone: "(00)00000-0000",
       };
 
@@ -454,8 +423,8 @@ describe("Users module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Departamento não encontrado");
-      expect(validation.data.email).toEqual("test01@test.com");
-      expect(validation.data.name).toEqual("Test 01");
+      expect(validation.email).toEqual("test01@test.com");
+      expect(validation.name).toEqual("Test 01");
     });
 
     it("should try to update user with an invalid email", async () => {
@@ -479,13 +448,6 @@ describe("Users module", () => {
         name: "Test 02",
         office: "Test 02",
         password: "Test.123456",
-        permAccounting: true,
-        permAdmin: true,
-        permCorporate: true,
-        permFinances: true,
-        permHuman: true,
-        permMarketing: true,
-        permOversee: true,
         phone: "(00)00000-0000",
       };
 
@@ -495,8 +457,8 @@ describe("Users module", () => {
 
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual("E-mail já em uso");
-      expect(validation.data.email).toEqual("test01@test.com");
-      expect(validation.data.name).toEqual("Test 01");
+      expect(validation.email).toEqual("test01@test.com");
+      expect(validation.name).toEqual("Test 01");
     });
 
     it("should try to update user wit an invalid id", async () => {
@@ -519,13 +481,6 @@ describe("Users module", () => {
         name: "Test 02",
         office: "Test 02",
         password: "Test.123456",
-        permAccounting: true,
-        permAdmin: true,
-        permCorporate: true,
-        permFinances: true,
-        permHuman: true,
-        permMarketing: true,
-        permOversee: true,
         phone: "(00)00000-0000",
       };
 

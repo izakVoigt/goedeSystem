@@ -31,13 +31,6 @@ export class UsersService {
       name,
       office,
       password,
-      permAccounting,
-      permAdmin,
-      permCorporate,
-      permFinances,
-      permHuman,
-      permMarketing,
-      permOversee,
       phone,
     } = Cdto;
 
@@ -67,13 +60,6 @@ export class UsersService {
       name,
       office,
       password: hash,
-      permAccounting,
-      permAdmin,
-      permCorporate,
-      permFinances,
-      permHuman,
-      permMarketing,
-      permOversee,
       phone,
     });
 
@@ -99,13 +85,6 @@ export class UsersService {
   }
 
   async list(page: number, limit: number, query?: string, iDepartment?: string) {
-    if (!page) {
-      return new BadRequestException("Informe o número da página");
-    }
-    if (!limit) {
-      return new BadRequestException("Informe o limite de resultados na página");
-    }
-
     const offset = (page - 1) * limit;
 
     if (query && iDepartment) {
@@ -174,13 +153,6 @@ export class UsersService {
       name,
       office,
       password,
-      permAccounting,
-      permAdmin,
-      permCorporate,
-      permFinances,
-      permHuman,
-      permMarketing,
-      permOversee,
       phone,
     } = Udto;
 
@@ -235,13 +207,6 @@ export class UsersService {
         name,
         office,
         password: hash,
-        permAccounting,
-        permAdmin,
-        permCorporate,
-        permFinances,
-        permHuman,
-        permMarketing,
-        permOversee,
         phone,
       },
       { where: { id } },
@@ -270,13 +235,6 @@ export class UsersService {
       name,
       office,
       password,
-      permAccounting,
-      permAdmin,
-      permCorporate,
-      permFinances,
-      permHuman,
-      permMarketing,
-      permOversee,
       phone,
     } = Udto;
 
@@ -317,13 +275,6 @@ export class UsersService {
         name,
         office,
         password: hash,
-        permAccounting,
-        permAdmin,
-        permCorporate,
-        permFinances,
-        permHuman,
-        permMarketing,
-        permOversee,
         phone,
       },
       { where: { id } },

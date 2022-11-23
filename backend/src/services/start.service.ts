@@ -4,6 +4,7 @@ import { Injectable, OnApplicationBootstrap } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Departments } from "../modules/departments/model/departments.model";
 import { Notifications } from "../modules/notifications/model/notifications.model";
+import { Permissions } from "../modules/permissions/model/permissions.model";
 import { Resumes } from "../modules/resumes/model/resumes.model";
 import { Users } from "../modules/users/model/users.model";
 import { Vacancies } from "../modules/vacancies/model/vacancies.model";
@@ -15,6 +16,8 @@ export class StartService implements OnApplicationBootstrap {
     private departmentModel: typeof Departments,
     @InjectModel(Notifications)
     private notificationsModel: typeof Notifications,
+    @InjectModel(Permissions)
+    private permissionsModel: typeof Permissions,
     @InjectModel(Resumes)
     private resumesModel: typeof Resumes,
     @InjectModel(Users)
@@ -58,6 +61,7 @@ export class StartService implements OnApplicationBootstrap {
     await this.departmentModel.sync().catch((err) => console.log(err));
     await this.usersModel.sync().catch((err) => console.log(err));
     await this.notificationsModel.sync().catch((err) => console.log(err));
+    await this.permissionsModel.sync().catch((err) => console.log(err));
     await this.resumesModel.sync().catch((err) => console.log(err));
     await this.vacanciesModel.sync().catch((err) => console.log(err));
 
@@ -107,42 +111,38 @@ export class StartService implements OnApplicationBootstrap {
       if (!userExists) {
         const hash = await argon.hash(password);
 
-        await this.usersModel
-          .create({
-            active,
-            address,
-            addressCity,
-            addressDistrict,
-            addressNumber,
-            addressState,
-            addressZipCode,
-            birthDate: new Date(birthDate),
-            cpf,
-            email,
-            hireDate: new Date(hireDate),
-            iDepartment,
-            name,
-            office,
-            password: hash,
-            permAccounting,
-            permAdmin,
-            permCorporate,
-            permFinances,
-            permHuman,
-            permMarketing,
-            permOversee,
-            phone,
-          })
-          .catch((err) => console.log(err));
+        await this.usersModel.create({
+          active,
+          address,
+          addressCity,
+          addressDistrict,
+          addressNumber,
+          addressState,
+          addressZipCode,
+          birthDate: new Date(birthDate),
+          cpf,
+          email,
+          hireDate: new Date(hireDate),
+          iDepartment,
+          name,
+          office,
+          password: hash,
+          permAccounting,
+          permAdmin,
+          permCorporate,
+          permFinances,
+          permHuman,
+          permMarketing,
+          permOversee,
+          phone,
+        });
       }
     }
 
     for (let i = 0; i < fileData.vacancies.length; i++) {
       const { description, iDepartment, requirements, title } = fileData.vacancies[i];
 
-      await this.vacanciesModel
-        .create({ description, iDepartment, requirements, title })
-        .catch((err) => console.log(err));
+      await this.vacanciesModel.create({ description, iDepartment, requirements, title });
     }
   }
 }

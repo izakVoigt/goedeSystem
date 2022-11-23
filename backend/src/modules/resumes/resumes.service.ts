@@ -1,5 +1,5 @@
 import * as fs from "fs-extra";
-import { BadRequestException, Injectable, NotFoundException, StreamableFile } from "@nestjs/common";
+import { Injectable, NotFoundException, StreamableFile } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Op } from "sequelize";
 import { Response } from "express";
@@ -77,13 +77,6 @@ export class ResumesService {
   }
 
   async list(page: number, limit: number, name?: string, iDepartment?: string) {
-    if (!page) {
-      return new BadRequestException("Informe o número da página");
-    }
-    if (!limit) {
-      return new BadRequestException("Informe o limite de resultados na página");
-    }
-
     const offset = (page - 1) * limit;
 
     if (name && iDepartment) {

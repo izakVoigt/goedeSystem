@@ -61,13 +61,6 @@ describe("Notifications module", () => {
       name: "Test 01",
       office: "Test 01",
       password: "Test.12345",
-      permAccounting: true,
-      permAdmin: true,
-      permCorporate: true,
-      permFinances: true,
-      permHuman: true,
-      permMarketing: true,
-      permOversee: true,
       phone: "(00)00000-0000",
     });
   };
@@ -94,8 +87,8 @@ describe("Notifications module", () => {
       const response = await request(app.getHttpServer()).get("/notifications/1");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.data.id).toEqual(1);
-      expect(response.body.data.iUser).toEqual(1);
+      expect(response.body.id).toEqual(1);
+      expect(response.body.iUser).toEqual(1);
     });
 
     it("should try to get data from notification with an invalid id", async () => {
@@ -129,11 +122,11 @@ describe("Notifications module", () => {
 
       expect(response.statusCode).toEqual(201);
       expect(response.body.message).toEqual("Notificação criada com sucesso");
-      expect(validation.data.id).toEqual(1);
-      expect(validation.data.iUser).toEqual(data.iUser);
-      expect(validation.data.notificationClient).toEqual(data.notificationClient);
-      expect(validation.data.notificationContact).toEqual(data.notificationContact);
-      expect(validation.data.notificationResume).toEqual(data.notificationResume);
+      expect(validation.id).toEqual(1);
+      expect(validation.iUser).toEqual(data.iUser);
+      expect(validation.notificationClient).toEqual(data.notificationClient);
+      expect(validation.notificationContact).toEqual(data.notificationContact);
+      expect(validation.notificationResume).toEqual(data.notificationResume);
     });
 
     it("should try to create a new notification with an invalid user", async () => {
@@ -213,7 +206,7 @@ describe("Notifications module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Notificação alterada com sucesso");
-      expect(validation.data.notificationClient).toEqual(data.notificationClient);
+      expect(validation.notificationClient).toEqual(data.notificationClient);
     });
 
     it("should try to update notification with an invalid id", async () => {
@@ -227,7 +220,7 @@ describe("Notifications module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Notificação não encontrada");
-      expect(validation.data.notificationClient).toEqual(true);
+      expect(validation.notificationClient).toEqual(true);
     });
   });
 
@@ -254,9 +247,9 @@ describe("Notifications module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Notificação alterada com sucesso");
-      expect(validation.data.notificationClient).toEqual(data.notificationClient);
-      expect(validation.data.notificationContact).toEqual(data.notificationContact);
-      expect(validation.data.notificationResume).toEqual(data.notificationResume);
+      expect(validation.notificationClient).toEqual(data.notificationClient);
+      expect(validation.notificationContact).toEqual(data.notificationContact);
+      expect(validation.notificationResume).toEqual(data.notificationResume);
     });
 
     it("should try to update notification with an invalid id", async () => {
@@ -272,9 +265,9 @@ describe("Notifications module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Notificação não encontrada");
-      expect(validation.data.notificationClient).toEqual(true);
-      expect(validation.data.notificationContact).toEqual(true);
-      expect(validation.data.notificationResume).toEqual(true);
+      expect(validation.notificationClient).toEqual(true);
+      expect(validation.notificationContact).toEqual(true);
+      expect(validation.notificationResume).toEqual(true);
     });
   });
 });

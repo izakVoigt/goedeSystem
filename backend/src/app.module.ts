@@ -9,6 +9,7 @@ import { AuthModule } from "./auth/auth.module";
 import { ContactsModule } from "./modules/contacts/contacts.module";
 import { DepartmentsModule } from "./modules/departments/departments.module";
 import { NotificationsModule } from "./modules/notifications/notifications.module";
+import { PermissionsModule } from "./modules/permissions/permissions.module";
 import { ResumesModule } from "./modules/resumes/resumes.module";
 import { RootModule } from "./modules/root/root.module";
 import { UsersModule } from "./modules/users/users.module";
@@ -20,6 +21,7 @@ import { StartService } from "./services/start.service";
 
 import { Departments } from "./modules/departments/model/departments.model";
 import { Notifications } from "./modules/notifications/model/notifications.model";
+import { Permissions } from "./modules/permissions/model/permissions.model";
 import { Resumes } from "./modules/resumes/model/resumes.model";
 import { Users } from "./modules/users/model/users.model";
 import { Vacancies } from "./modules/vacancies/model/vacancies.model";
@@ -34,11 +36,12 @@ import { Vacancies } from "./modules/vacancies/model/vacancies.model";
       ttl: 60,
       limit: 10,
     }),
-    SequelizeModule.forFeature([Departments, Notifications, Resumes, Users, Vacancies]),
+    SequelizeModule.forFeature([Departments, Notifications, Permissions, Resumes, Users, Vacancies]),
     AuthModule,
     ContactsModule,
     DepartmentsModule,
     NotificationsModule,
+    PermissionsModule,
     ResumesModule,
     RootModule,
     UsersModule,

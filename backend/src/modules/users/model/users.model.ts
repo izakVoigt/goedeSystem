@@ -18,6 +18,7 @@ import {
 import { brazilianStates } from "../../../util/enum/brazilianStates.enum";
 import { Departments } from "../../departments/model/departments.model";
 import { Notifications } from "../../notifications/model/notifications.model";
+import { Permissions } from "../../permissions/model/permissions.model";
 
 @Table
 export class Users extends Model {
@@ -89,27 +90,6 @@ export class Users extends Model {
   password: string;
 
   @Column
-  permAccounting: boolean;
-
-  @Column
-  permAdmin: boolean;
-
-  @Column
-  permCorporate: boolean;
-
-  @Column
-  permFinances: boolean;
-
-  @Column
-  permHuman: boolean;
-
-  @Column
-  permMarketing: boolean;
-
-  @Column
-  permOversee: boolean;
-
-  @Column
   phone: string;
 
   @UpdatedAt
@@ -121,4 +101,7 @@ export class Users extends Model {
 
   @HasOne(() => Notifications)
   notification: Notifications;
+
+  @HasOne(() => Permissions)
+  permission: Permissions;
 }

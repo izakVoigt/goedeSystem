@@ -81,17 +81,47 @@ describe("resumes module", () => {
       await createDepartment();
       await createResume01();
 
-      const response = await request(app.getHttpServer()).get("/resumes");
+      const response = await request(app.getHttpServer()).get("/resumes?page=1&limit=10");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.list.length).toEqual(1);
+      expect(response.body.length).toEqual(1);
+    });
+
+    it("should get resumes list with name and iDepartment", async () => {
+      await createDepartment();
+      await createResume01();
+
+      const response = await request(app.getHttpServer()).get("/resumes?page=1&limit=10&name=Test&iDepartment=1");
+
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.length).toEqual(1);
+    });
+
+    it("should get resumes list with name", async () => {
+      await createDepartment();
+      await createResume01();
+
+      const response = await request(app.getHttpServer()).get("/resumes?page=1&limit=10&name=Test");
+
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.length).toEqual(1);
+    });
+
+    it("should get resumes list with iDepartment", async () => {
+      await createDepartment();
+      await createResume01();
+
+      const response = await request(app.getHttpServer()).get("/resumes?page=1&limit=10&iDepartment=1");
+
+      expect(response.statusCode).toEqual(200);
+      expect(response.body.length).toEqual(1);
     });
 
     it("should get resumes list without any resume", async () => {
-      const response = await request(app.getHttpServer()).get("/resumes");
+      const response = await request(app.getHttpServer()).get("/resumes?page=1&limit=10");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.list.length).toEqual(0);
+      expect(response.body.length).toEqual(0);
     });
   });
 
@@ -118,8 +148,8 @@ describe("resumes module", () => {
       const response = await request(app.getHttpServer()).get("/resumes/1");
 
       expect(response.statusCode).toEqual(200);
-      expect(response.body.data.id).toEqual(1);
-      expect(response.body.data.email).toEqual("test@test.com");
+      expect(response.body.id).toEqual(1);
+      expect(response.body.email).toEqual("test@test.com");
     });
 
     it("should try to get data from resume with an invalid id", async () => {
@@ -194,8 +224,8 @@ describe("resumes module", () => {
 
       expect(response.statusCode).toEqual(201);
       expect(response.body.message).toEqual("Currículo cadastrado com sucesso");
-      expect(validation.data.id).toEqual(1);
-      expect(validation.data.email).toEqual("test@test.com");
+      expect(validation.id).toEqual(1);
+      expect(validation.email).toEqual("test@test.com");
     });
 
     it("should try to create a new resume with an invalid department", async () => {
@@ -207,11 +237,8 @@ describe("resumes module", () => {
         .field("phone", "(00) 00000-0000")
         .attach("file", fs.createReadStream("src/util/test/testFile.pdf"));
 
-      const validation = await resumesService.list();
-
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Departamento não encontrado");
-      expect(validation.list.length).toEqual(0);
     });
 
     it("should try to create a new resume with an invalid file type", async () => {
@@ -225,11 +252,8 @@ describe("resumes module", () => {
         .field("phone", "(00) 00000-0000")
         .attach("file", fs.createReadStream("src/util/test/testFile.txt"));
 
-      const validation = await resumesService.list();
-
       expect(response.statusCode).toEqual(400);
       expect(response.body.message).toEqual("Somente arquivos no formato PDF são permitidos");
-      expect(validation.list.length).toEqual(0);
     });
   });
 
@@ -255,21 +279,15 @@ describe("resumes module", () => {
 
       const response = await request(app.getHttpServer()).delete("/resumes/1");
 
-      const validation = await resumesService.list();
-
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Currículo excluído com sucesso");
-      expect(validation.list.length).toEqual(0);
     });
 
     it("should try to delete an invalid resume", async () => {
       const response = await request(app.getHttpServer()).delete("/resumes/1");
 
-      const validation = await resumesService.list();
-
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Currículo não encontrado");
-      expect(validation.list.length).toEqual(0);
     });
   });
 
@@ -303,7 +321,7 @@ describe("resumes module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Currículo alterado com sucesso");
-      expect(validation.data.observations).toEqual(data.observations);
+      expect(validation.observations).toEqual(data.observations);
     });
 
     it("should try to update resume with an invalid department id", async () => {
@@ -320,7 +338,7 @@ describe("resumes module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Departamento não encontrado");
-      expect(validation.data.iDepartment).toEqual(1);
+      expect(validation.iDepartment).toEqual(1);
     });
 
     it("should try to update resume with an invalid id", async () => {
@@ -337,7 +355,7 @@ describe("resumes module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Currículo não encontrado");
-      expect(validation.data.observations).toEqual(null);
+      expect(validation.observations).toEqual(null);
     });
   });
 
@@ -373,9 +391,9 @@ describe("resumes module", () => {
 
       expect(response.statusCode).toEqual(200);
       expect(response.body.message).toEqual("Currículo alterado com sucesso");
-      expect(validation.data.iDepartment).toEqual(1);
-      expect(validation.data.observations).toEqual(data.observations);
-      expect(validation.data.revised).toEqual(data.revised);
+      expect(validation.iDepartment).toEqual(1);
+      expect(validation.observations).toEqual(data.observations);
+      expect(validation.revised).toEqual(data.revised);
     });
 
     it("should try to update resume with an invalid department id", async () => {
@@ -394,8 +412,8 @@ describe("resumes module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Departamento não encontrado");
-      expect(validation.data.iDepartment).toEqual(1);
-      expect(validation.data.observations).toEqual(null);
+      expect(validation.iDepartment).toEqual(1);
+      expect(validation.observations).toEqual(null);
     });
 
     it("should try to update resume with an invalid id", async () => {
@@ -414,7 +432,7 @@ describe("resumes module", () => {
 
       expect(response.statusCode).toEqual(404);
       expect(response.body.message).toEqual("Currículo não encontrado");
-      expect(validation.data.observations).toEqual(null);
+      expect(validation.observations).toEqual(null);
     });
   });
 });

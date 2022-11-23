@@ -4,7 +4,7 @@ import { Sequelize } from "sequelize-typescript";
 import * as request from "supertest";
 import { AppModule } from "../../../app.module";
 
-describe("Notifications auth module", () => {
+describe("Permissions auth module", () => {
   let app: INestApplication;
   let sequelize: Sequelize;
 
@@ -24,62 +24,70 @@ describe("Notifications auth module", () => {
     await app.close();
   });
 
-  describe("/notifications/:id (GET)", () => {
+  describe("/permissions/:id (GET)", () => {
     it("should try to get notification id 1 data without authentication", async () => {
-      const response = await request(app.getHttpServer()).get("/notifications/1");
+      const response = await request(app.getHttpServer()).get("/permissions/1");
 
       expect(response.statusCode).toEqual(401);
       expect(response.body.message).toEqual("Unauthorized");
     });
   });
 
-  describe("/notifications (POST)", () => {
+  describe("/permissions (POST)", () => {
     it("should try to create a new notification without authentication", async () => {
       const data = {
         iUser: 1,
-        notificationClient: true,
-        notificationContact: true,
-        notificationResume: true,
+        permAccounting: true,
+        permAdmin: true,
+        permCorporate: true,
+        permFinances: true,
+        permHuman: true,
+        permMarketing: true,
+        permOversee: true,
       };
 
-      const response = await request(app.getHttpServer()).post("/notifications").send(data);
+      const response = await request(app.getHttpServer()).post("/permissions").send(data);
 
       expect(response.statusCode).toEqual(401);
       expect(response.body.message).toEqual("Unauthorized");
     });
   });
 
-  describe("/notifications/:id (DELETE)", () => {
+  describe("/permissions/:id (DELETE)", () => {
     it("should try to delete notification id 1 without authentication", async () => {
-      const response = await request(app.getHttpServer()).delete("/notifications/1");
+      const response = await request(app.getHttpServer()).delete("/permissions/1");
 
       expect(response.statusCode).toEqual(401);
       expect(response.body.message).toEqual("Unauthorized");
     });
   });
 
-  describe("/notifications/:id (PATCH)", () => {
+  describe("/permissions/:id (PATCH)", () => {
     it("should try to update notification id 1 without authentication", async () => {
       const data = {
-        notificationClient: false,
+        permOversee: true,
       };
 
-      const response = await request(app.getHttpServer()).patch("/notifications/1").send(data);
+      const response = await request(app.getHttpServer()).patch("/permissions/1").send(data);
 
       expect(response.statusCode).toEqual(401);
       expect(response.body.message).toEqual("Unauthorized");
     });
   });
 
-  describe("/notifications/:id (PUT)", () => {
-    it("should try to update notifications id 1 without authentication", async () => {
+  describe("/permissions/:id (PUT)", () => {
+    it("should try to update permissions id 1 without authentication", async () => {
       const data = {
-        notificationClient: true,
-        notificationContact: true,
-        notificationResume: false,
+        permAccounting: true,
+        permAdmin: true,
+        permCorporate: true,
+        permFinances: true,
+        permHuman: true,
+        permMarketing: true,
+        permOversee: true,
       };
 
-      const response = await request(app.getHttpServer()).put("/notifications/1").send(data);
+      const response = await request(app.getHttpServer()).put("/permissions/1").send(data);
 
       expect(response.statusCode).toEqual(401);
       expect(response.body.message).toEqual("Unauthorized");

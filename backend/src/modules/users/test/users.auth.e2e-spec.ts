@@ -60,13 +60,6 @@ describe("Users auth module", () => {
         name: "Test 01",
         office: "Test 01",
         password: "Test.123456",
-        permAccounting: true,
-        permAdmin: true,
-        permCorporate: true,
-        permFinances: true,
-        permHuman: true,
-        permMarketing: true,
-        permOversee: true,
         phone: "(00)00000-0000",
       };
 
@@ -121,13 +114,6 @@ describe("Users auth module", () => {
         name: "Test 02",
         office: "Test 02",
         password: "Test.123456",
-        permAccounting: true,
-        permAdmin: true,
-        permCorporate: true,
-        permFinances: true,
-        permHuman: true,
-        permMarketing: true,
-        permOversee: true,
         phone: "(00)00000-0000",
       };
 
