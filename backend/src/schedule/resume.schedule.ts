@@ -4,7 +4,7 @@ import { InjectModel } from "@nestjs/sequelize";
 import { Users } from "../modules/users/model/users.model";
 import { Notifications } from "../modules/notifications/model/notifications.model";
 import { Resumes } from "../modules/resumes/model/resumes.model";
-import { MailSender } from "../util/mailSender";
+import { MailSender } from "../services/mailSender.service";
 import resumesNotRevisedNotification from "../util/html/resumeNotRevisedNotification";
 
 @Injectable()

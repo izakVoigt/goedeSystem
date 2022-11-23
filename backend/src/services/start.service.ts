@@ -9,7 +9,7 @@ import { Users } from "../modules/users/model/users.model";
 import { Vacancies } from "../modules/vacancies/model/vacancies.model";
 
 @Injectable()
-export class ApplicationInit implements OnApplicationBootstrap {
+export class StartService implements OnApplicationBootstrap {
   constructor(
     @InjectModel(Departments)
     private departmentModel: typeof Departments,

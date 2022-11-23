@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/sequelize";
 import { MessageContactDto } from "./dto";
 import { Users } from "../users/model/users.model";
 import { Notifications } from "../notifications/model/notifications.model";
-import { MailSender } from "../../util/mailSender";
+import { MailSender } from "../../services/mailSender.service";
 import contactMessage from "../../util/html/contactMessage";
 
 @Injectable()

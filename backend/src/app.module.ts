@@ -15,7 +15,8 @@ import { UsersModule } from "./modules/users/users.module";
 import { VacanciesModule } from "./modules/vacancies/vacancies.module";
 
 import { ResumesScheduleTasks } from "./schedule/resume.schedule";
-import { ApplicationInit } from "./util/applicationInit";
+import { ShutdownService } from "./services/shutdown.service";
+import { StartService } from "./services/start.service";
 
 import { Departments } from "./modules/departments/model/departments.model";
 import { Notifications } from "./modules/notifications/model/notifications.model";
@@ -43,6 +44,6 @@ import { Vacancies } from "./modules/vacancies/model/vacancies.model";
     UsersModule,
     VacanciesModule,
   ],
-  providers: [ApplicationInit, ResumesScheduleTasks],
+  providers: [ResumesScheduleTasks, ShutdownService, StartService],
 })
 export class AppModule {}
