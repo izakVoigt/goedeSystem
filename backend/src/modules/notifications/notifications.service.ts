@@ -39,7 +39,7 @@ export class NotificationsService {
 
     if (!data) throw new NotFoundException("Notificação não encontrada");
 
-    return { data };
+    return data;
   }
 
   async destroy(id: number) {

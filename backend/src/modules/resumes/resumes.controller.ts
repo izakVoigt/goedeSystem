@@ -12,6 +12,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
   Res,
   UploadedFile,
@@ -55,8 +56,13 @@ export class ResumesController {
 
   @UseGuards(JwtGuard)
   @Get()
-  list() {
-    return this.resumesService.list();
+  list(
+    @Query("page", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) page: number,
+    @Query("limit", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) limit: number,
+    @Query("name") name: string,
+    @Query("iDepartment", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) iDepartment: number,
+  ) {
+    return this.resumesService.list(page, limit, name, iDepartment);
   }
 
   @UseGuards(JwtGuard)

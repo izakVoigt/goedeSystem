@@ -52,6 +52,7 @@ export class ApplicationInit implements OnApplicationBootstrap {
         permOversee: boolean;
         phone: string;
       }[];
+      vacancies: { description: string; iDepartment: number; requirements: string; title: string }[];
     }
 
     await this.departmentModel.sync().catch((err) => console.log(err));
@@ -134,6 +135,14 @@ export class ApplicationInit implements OnApplicationBootstrap {
           })
           .catch((err) => console.log(err));
       }
+    }
+
+    for (let i = 0; i < fileData.vacancies.length; i++) {
+      const { description, iDepartment, requirements, title } = fileData.vacancies[i];
+
+      await this.vacanciesModel
+        .create({ description, iDepartment, requirements, title })
+        .catch((err) => console.log(err));
     }
   }
 }

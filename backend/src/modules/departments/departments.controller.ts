@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import { JwtGuard } from "../../auth/guard";
@@ -26,8 +27,12 @@ export class DepartmentsController {
   }
 
   @Get()
-  list() {
-    return this.departmentsService.list();
+  list(
+    @Query("page", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) page: number,
+    @Query("limit", new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE })) limit: number,
+    @Query("name") name: string,
+  ) {
+    return this.departmentsService.list(page, limit, name);
   }
 
   @UseGuards(JwtGuard)

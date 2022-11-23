@@ -1,6 +1,7 @@
 import * as argon from "argon2";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { Op } from "sequelize";
 import { CreateUserDto, UpdateUserPatchDto, UpdateUserPutDto } from "./dto";
 import { Departments } from "../departments/model/departments.model";
 import { Users } from "./model/users.model";
@@ -84,7 +85,7 @@ export class UsersService {
 
     if (!data) throw new NotFoundException("Usuário não encontrado");
 
-    return { data };
+    return data;
   }
 
   async destroy(id: number) {
@@ -97,13 +98,62 @@ export class UsersService {
     return { message: "Usuário excluído com sucesso" };
   }
 
-  async list() {
+  async list(page: number, limit: number, query?: string, iDepartment?: number) {
+    if (!page) {
+      return new BadRequestException("Informe o número da página");
+    }
+    if (!limit) {
+      return new BadRequestException("Informe o limite de resultados na página");
+    }
+
+    const offset = (page - 1) * limit;
+
+    if (query && iDepartment) {
+      const list = await this.usersModel.findAll({
+        where: {
+          [Op.or]: [{ name: { [Op.like]: `%${query}%` } }, { email: { [Op.like]: `%${query}%` } }],
+          iDepartment,
+        },
+        attributes: { include: ["id", "email", "name"] },
+        order: [["name", "ASC"]],
+        limit: limit,
+        offset: offset,
+      });
+
+      return list;
+    }
+    if (query) {
+      const list = await this.usersModel.findAll({
+        where: {
+          [Op.or]: [{ name: { [Op.like]: `%${query}%` } }, { email: { [Op.like]: `%${query}%` } }],
+        },
+        attributes: { include: ["id", "email", "name"] },
+        order: [["name", "ASC"]],
+        limit: limit,
+        offset: offset,
+      });
+
+      return list;
+    }
+    if (iDepartment) {
+      const list = await this.usersModel.findAll({
+        where: { iDepartment },
+        attributes: { include: ["id", "email", "name"] },
+        order: [["name", "ASC"]],
+        limit: limit,
+        offset: offset,
+      });
+
+      return list;
+    }
     const list = await this.usersModel.findAll({
-      attributes: { include: ["id", "iDepartment", "name"] },
+      attributes: { include: ["id", "email", "name"] },
       order: [["name", "ASC"]],
+      limit: limit,
+      offset: offset,
     });
 
-    return { list };
+    return list;
   }
 
   async updatePatch(id: number, Udto: UpdateUserPatchDto) {

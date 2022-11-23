@@ -49,7 +49,7 @@ export class VacanciesService {
   }
 
   async list() {
-    const list = await this.vacanciesModel.findAll({ order: [["title", "ASC"]] });
+    const list = await this.vacanciesModel.findAll({ attributes: ["id", "title"], order: [["title", "ASC"]] });
 
     return { list };
   }

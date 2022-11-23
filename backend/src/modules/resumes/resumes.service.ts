@@ -1,6 +1,7 @@
 import * as fs from "fs-extra";
-import { Injectable, NotFoundException, StreamableFile } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, StreamableFile } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { Op } from "sequelize";
 import { Response } from "express";
 import { CreateResumeDto, UpdateResumePatchDto, UpdateResumePutDto } from "./dto";
 import { Departments } from "../departments/model/departments.model";
@@ -43,7 +44,7 @@ export class ResumesService {
       throw new NotFoundException("Currículo não encontrado");
     }
 
-    return { data };
+    return data;
   }
 
   async destroy(id: number) {
@@ -75,10 +76,53 @@ export class ResumesService {
     return new StreamableFile(fileBuffer);
   }
 
-  async list() {
-    const list = await this.resumesModel.findAll({ attributes: { include: ["id", "name", "iDepartment"] } });
+  async list(page: number, limit: number, name?: string, iDepartment?: number) {
+    if (!page) {
+      return new BadRequestException("Informe o número da página");
+    }
+    if (!limit) {
+      return new BadRequestException("Informe o limite de resultados na página");
+    }
 
-    return { list };
+    const offset = (page - 1) * limit;
+
+    if (name && iDepartment) {
+      const list = await this.resumesModel.findAll({
+        where: { iDepartment, name: { [Op.like]: `%${name}%` } },
+        attributes: ["id", "name"],
+        order: [["name", "ASC"]],
+        limit: limit,
+        offset: offset,
+      });
+
+      return list;
+    }
+    if (name) {
+      const list = await this.resumesModel.findAll({
+        where: { name: { [Op.like]: `%${name}%` } },
+        attributes: ["id", "name"],
+        order: [["name", "ASC"]],
+        limit: limit,
+        offset: offset,
+      });
+
+      return list;
+    }
+    if (iDepartment) {
+      const list = await this.resumesModel.findAll({
+        where: { iDepartment },
+        attributes: ["id", "name"],
+        order: [["name", "ASC"]],
+        limit: limit,
+        offset: offset,
+      });
+
+      return list;
+    }
+
+    const list = await this.resumesModel.findAll({ attributes: { include: ["id", "name"] } });
+
+    return list;
   }
 
   async updatePatch(id: number, Udto: UpdateResumePatchDto) {

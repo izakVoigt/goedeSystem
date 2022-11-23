@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
+import { Op } from "sequelize";
 import { CreateDepartmentDto, UpdateDepartmentPatchDto, UpdateDepartmentPutDto } from "./dto";
 import { Departments } from "./model/departments.model";
 
@@ -30,7 +31,7 @@ export class DepartmentsService {
 
     if (!data) throw new NotFoundException("Departamento não encontrado");
 
-    return { data };
+    return data;
   }
 
   async destroy(id: number) {
@@ -43,10 +44,36 @@ export class DepartmentsService {
     return { message: "Departamento excluído com sucesso" };
   }
 
-  async list() {
-    const list = await this.departmentModel.findAll({ attributes: ["id", "name"], order: [["name", "ASC"]] });
+  async list(page: number, limit: number, name?: string) {
+    if (!page) {
+      return new BadRequestException("Informe o número da página");
+    }
+    if (!limit) {
+      return new BadRequestException("Informe o limite de resultados na página");
+    }
 
-    return { list };
+    const offset = (page - 1) * limit;
+
+    if (name) {
+      const list = await this.departmentModel.findAll({
+        where: { name: { [Op.like]: `%${name}%` } },
+        attributes: ["id", "name"],
+        order: [["name", "ASC"]],
+        limit: limit,
+        offset: offset,
+      });
+
+      return list;
+    }
+
+    const list = await this.departmentModel.findAll({
+      attributes: ["id", "name"],
+      order: [["name", "ASC"]],
+      limit: limit,
+      offset: offset,
+    });
+
+    return list;
   }
 
   async updatePatch(id: number, Udto: UpdateDepartmentPatchDto) {

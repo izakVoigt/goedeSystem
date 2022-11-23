@@ -1,8 +1,8 @@
 {
   "name": "goede-api",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.0.0",
+  "description": "Internal API",
+  "author": "Izak Voigt",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -12,7 +12,6 @@
     "db:test:up": "docker compose up goedeass_system_test -d",
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "npm run db:dev:rm && npm run db:dev:up && timeout 20 && nest start --watch",
     "start:debug": "nest start --debug --watch",
